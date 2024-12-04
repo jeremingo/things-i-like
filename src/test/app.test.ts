@@ -1,10 +1,13 @@
-const request = require("supertest");
-const { MongoMemoryServer } = require('mongodb-memory-server');
+import request from 'supertest';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { Express } from 'express';
 
-const initApp = require("../server");
-const mongoose = require("mongoose");
+import initApp from '../server';
+import mongoose from 'mongoose';
 
-var app;
+var app: Express;
+var mongoServer: MongoMemoryServer;
+
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   process.env.DATABASE_URL = mongoServer.getUri();
