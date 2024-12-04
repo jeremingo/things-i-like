@@ -1,11 +1,12 @@
-const dotenv = require('dotenv').config();
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+import dotenv from 'dotenv';
+dotenv.config();
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
 
-const express = require('express');
+import express, { Express } from 'express';
 const app = express();
 
-const indexRoute = require('./routes/index');
+import indexRoute from './routes/index';
 
 app.use('/', indexRoute);
 
@@ -17,7 +18,7 @@ db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Connected to database'));
 
 const initApp = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise<Express>((resolve, reject) => {
     mongoose
       .connect(process.env.DATABASE_URL)
       .then(() => {
@@ -29,4 +30,4 @@ const initApp = () => {
   });
 };
 
-module.exports = initApp;
+export default initApp;
