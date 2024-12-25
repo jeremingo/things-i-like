@@ -7,11 +7,13 @@ import express, { Express } from 'express';
 const app = express();
 
 import indexRoute from './routes/index';
-
-app.use('/', indexRoute);
+import authRoute from './routes/auth';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/', indexRoute);
+app.use('/auth', authRoute);
 
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));

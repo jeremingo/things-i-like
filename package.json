@@ -19,14 +19,18 @@
   },
   "homepage": "https://github.com/jeremingo/things-i-like#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^10.1.2",

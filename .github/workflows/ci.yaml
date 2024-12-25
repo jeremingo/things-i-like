@@ -12,6 +12,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      JWT_SECRET: 'test_secret'
+      TOKEN_EXPIRES: '1d'
+      REFRESH_TOKEN_EXPIRES: '7d'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
