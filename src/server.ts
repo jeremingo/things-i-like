@@ -26,9 +26,7 @@ const initApp = () => {
       .then(() => {
         resolve(app);
       })
-      .catch((error) => {
-        reject(error);
-      });
+      .catch(reject);
   });
 };
 

@@ -3,8 +3,16 @@ import userModel, { User } from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Document } from "mongoose";
+import Tokens from "./tokens";
 
-const register = async (req: Request, res: Response) => {
+interface CreateUserRequestBody {
+  email: string;
+  username: string;
+  displayName?: string;
+  password: string;
+}
+
+const register = async (req: Request<object, object, CreateUserRequestBody>, res: Response) => {
   try {
     res.status(200).send(await userModel.create({
       email: req.body.email,
@@ -17,10 +25,9 @@ const register = async (req: Request, res: Response) => {
   }
 };
 
-type Tokens = {
-  accessToken: string,
-  refreshToken: string,
-  _id: string
+type JwtPayload = {
+  _id: string,
+  random: string
 };
 
 const generateToken = (userId: string): Tokens | null => {
@@ -30,16 +37,16 @@ const generateToken = (userId: string): Tokens | null => {
     return null;
   }
 
-  const random = Math.random().toString();
+  const payload = { _id: userId, random: Math.random().toString() };
   
   return {
     accessToken: jwt.sign(
-      { _id: userId, random: random },
+      payload,
       process.env.JWT_SECRET,
       { expiresIn: process.env.TOKEN_EXPIRES }
     ),
     refreshToken: jwt.sign(
-      { _id: userId, random: random, },
+      payload,
       process.env.JWT_SECRET,
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRES }
     ),
@@ -47,18 +54,23 @@ const generateToken = (userId: string): Tokens | null => {
   };
 };
 
-const login = async (req: Request, res: Response) => {
+interface LoginRequestBody {
+  email: string;
+  password: string;
+}
+
+const login = async (req: Request<object, object, LoginRequestBody>, res: Response<Tokens | Error>) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
 
     if (!user || !await bcrypt.compare(req.body.password, user.password)) {
-      res.status(400).send("wrong username or password");
+      res.status(400).send(new Error("wrong username or password"));
       return;
     }
     
     const tokens = generateToken(user._id);
     if (!tokens) {
-      res.status(500).send("Server Error");
+      res.status(500).send(new Error("Server Error"));
       return;
     }
 
@@ -70,73 +82,58 @@ const login = async (req: Request, res: Response) => {
     await user.save();
     res.status(200).send(tokens);
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send(new Error(err as string));
   }
 };
 
-type tUser = Document<unknown, {}, User> &
+type tUser = Document<unknown, object, User> &
   User &
   Required<{ _id: string }> &
   { __v: number };
 
-const verifyRefreshToken = (refreshToken: string | undefined) => {
-  return new Promise<tUser>((resolve, reject) => {
-    if (!refreshToken) {
-      reject("fail");
-      return;
-    }
-    
-    if (!process.env.JWT_SECRET) {
-      reject("fail");
-      return;
-    }
-    jwt.verify(
-      refreshToken,
-      process.env.JWT_SECRET,
-      async (err: any, payload: any) => {
-        if (err) {
-          reject("fail");
-          return;
-        }
+const verifyRefreshToken = async (refreshToken: string | undefined): Promise<tUser> => {
+  if (!refreshToken) {
+    throw new Error("fail");
+  }
+  
+  if (!process.env.JWT_SECRET) {
+    throw new Error("fail");
+  }
 
-        try {
+  const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET) as JwtPayload;
 
-          const user = await userModel.findById(payload._id);
-          if (!user) {
-            reject("fail");
-            return;
-          }
-          if (!user.refreshToken || !user.refreshToken.includes(refreshToken)) {
-            user.refreshToken = [];
-            await user.save();
-            reject("fail");
-            return;
-          }
-          
-          user.refreshToken = user.refreshToken!.filter((token) => token !== refreshToken);
-          await user.save();
+  const user = await userModel.findById(decoded._id);
 
-          resolve(user);
-        } catch (err) {
-          reject("fail");
-          return;
-        }
-      }
-    );
-  });
+  if (!user) {
+    throw new Error("fail");
+  }
+  if (!user.refreshToken || !user.refreshToken.includes(refreshToken)) {
+    user.refreshToken = [];
+    await user.save();
+    throw new Error("fail");
+  }
+  
+  user.refreshToken = user.refreshToken.filter((token) => token !== refreshToken);
+  await user.save();
+
+  return user;
 };
 
-const logout = async (req: Request, res: Response) => {
+interface RefreshTokenBody {
+  refreshToken: string;
+}
+
+const logout = async (req: Request<object, object, RefreshTokenBody>, res: Response) => {
   try {
     const user = await verifyRefreshToken(req.body.refreshToken);
     await user.save();
     res.status(200).send("success");
-  } catch (err) {
+  } catch {
     res.status(400).send("fail");
   }
 };
 
-const refresh = async (req: Request, res: Response) => {
+const refresh = async (req: Request<object, object, RefreshTokenBody>, res: Response) => {
   try {
     const user = await verifyRefreshToken(req.body.refreshToken);
     if (!user) {
@@ -156,7 +153,7 @@ const refresh = async (req: Request, res: Response) => {
     await user.save();
 
     res.status(200).send(tokens);
-  } catch (err) {
+  } catch {
     res.status(400).send("fail");
   }
 };
@@ -196,5 +193,5 @@ export default {
   register,
   login,
   refresh,
-  logout,
+  logout
 };

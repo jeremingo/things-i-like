@@ -5,8 +5,8 @@ import { Express } from 'express';
 import initApp from '../server';
 import mongoose from 'mongoose';
 
-var app: Express;
-var mongoServer: MongoMemoryServer;
+let app: Express;
+let mongoServer: MongoMemoryServer;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
@@ -14,10 +14,9 @@ beforeAll(async () => {
   app = await initApp();
 });
 
-afterAll((done) => {
-  mongoose.disconnect();
-  mongoServer.stop();
-  done();
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
 });
 
 describe('App Tests', () => {
