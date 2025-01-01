@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Document } from "mongoose";
 import Tokens from "./tokens";
+import Config from "../env/config";
 
 interface CreateUserRequestBody {
   email: string;
@@ -30,25 +31,19 @@ type JwtPayload = {
   random: string
 };
 
-const generateToken = (userId: string): Tokens | null => {
-  if (!process.env.JWT_SECRET ||
-    !process.env.TOKEN_EXPIRES ||
-    !process.env.REFRESH_TOKEN_EXPIRES) {
-    return null;
-  }
-
+const generateToken = (userId: string): Tokens => {
   const payload = { _id: userId, random: Math.random().toString() };
   
   return {
     accessToken: jwt.sign(
       payload,
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.TOKEN_EXPIRES }
+      Config.JWT_SECRET,
+      { expiresIn: Config.TOKEN_EXPIRES }
     ),
     refreshToken: jwt.sign(
       payload,
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.REFRESH_TOKEN_EXPIRES }
+      Config.JWT_SECRET,
+      { expiresIn: Config.REFRESH_TOKEN_EXPIRES }
     ),
     _id: userId
   };
@@ -69,10 +64,6 @@ const login = async (req: Request<object, object, LoginRequestBody>, res: Respon
     }
     
     const tokens = generateToken(user._id);
-    if (!tokens) {
-      res.status(500).send(new Error("Server Error"));
-      return;
-    }
 
     if (!user.refreshToken) {
       user.refreshToken = [];
@@ -95,12 +86,8 @@ const verifyRefreshToken = async (refreshToken: string | undefined): Promise<tUs
   if (!refreshToken) {
     throw new Error("fail");
   }
-  
-  if (!process.env.JWT_SECRET) {
-    throw new Error("fail");
-  }
 
-  const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET) as JwtPayload;
+  const decoded = jwt.verify(refreshToken, Config.JWT_SECRET) as JwtPayload;
 
   const user = await userModel.findById(decoded._id);
 
@@ -142,10 +129,6 @@ const refresh = async (req: Request<object, object, RefreshTokenBody>, res: Resp
     }
     const tokens = generateToken(user._id);
 
-    if (!tokens) {
-      res.status(500).send("Server Error");
-      return;
-    }
     if (!user.refreshToken) {
       user.refreshToken = [];
     }
@@ -174,12 +157,8 @@ export const authMiddleware = (
     res.status(401).send("Access Denied");
     return;
   }
-  if (!process.env.JWT_SECRET) {
-    res.status(500).send("Server Error");
-    return;
-  }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+  jwt.verify(token, Config.JWT_SECRET, (err, payload) => {
     if (err) {
       res.status(401).send("Access Denied");
       return;

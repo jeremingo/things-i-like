@@ -1,10 +1,10 @@
 import initApp from './server';
-const port = process.env.PORT;
+import Config from './env/config';
 
 initApp()
 .then((app) => {
-  app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`);
+  app.listen(Config.PORT, () => {
+    console.log(`App listening at http://localhost:${Config.PORT}`);
   });
 })
 .catch(console.error);
