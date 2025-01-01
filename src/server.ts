@@ -8,6 +8,7 @@ const app = express();
 
 import indexRoute from './routes/index';
 import authRoute from './routes/auth';
+import Config from './env/config';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,8 +22,9 @@ db.once('open', () => console.log('Connected to database'));
 
 const initApp = () => {
   return new Promise<Express>((resolve, reject) => {
+    Config.load();
     mongoose
-      .connect(process.env.DATABASE_URL)
+      .connect(Config.DATABASE_URL)
       .then(() => {
         resolve(app);
       })
