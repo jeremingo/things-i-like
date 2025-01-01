@@ -4,10 +4,11 @@ import mongoose from "mongoose";
 import { Express } from "express";
 import { User } from "../models/user";
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import Tokens from "../controllers/tokens";
 
 
-var app: Express;
-var mongoServer: MongoMemoryServer;
+let app: Express;
+let mongoServer: MongoMemoryServer;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
@@ -15,10 +16,9 @@ beforeAll(async () => {
   app = await initApp();
 });
 
-afterAll((done) => {
-  mongoose.disconnect();
-  mongoServer.stop();
-  done();
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
 });
 
 const baseUrl = "/auth";
@@ -29,6 +29,7 @@ const testUser: TestUser = {
   email: "test@user.com",
   username: "testuser",
   password: "testpassword",
+  refreshToken: [],
 }
 
 describe("Auth Tests", () => {
@@ -57,23 +58,21 @@ describe("Auth Tests", () => {
   test("Auth test login", async () => {
     const response = await request(app).post(baseUrl + "/login").send(testUser);
     expect(response.statusCode).toBe(200);
-    const accessToken = response.body.accessToken;
-    const refreshToken = response.body.refreshToken;
-    expect(accessToken).toBeDefined();
-    expect(refreshToken).toBeDefined();
-    expect(response.body._id).toBeDefined();
-    testUser.accessToken = accessToken;
-    testUser.refreshToken = refreshToken;
-    testUser._id = response.body._id;
+    const tokens: Tokens = response.body as Tokens;
+    expect(tokens.accessToken).toBeDefined();
+    expect(tokens.refreshToken).toBeDefined();
+    expect(tokens._id).toBeDefined();
+    testUser.accessToken = tokens.accessToken;
+    testUser.refreshToken.push(tokens.refreshToken);
+    testUser._id = tokens._id;
   });
 
   test("Check tokens are not the same", async () => {
     const response = await request(app).post(baseUrl + "/login").send(testUser);
-    const accessToken = response.body.accessToken;
-    const refreshToken = response.body.refreshToken;
+    const tokens = response.body as Tokens;
 
-    expect(accessToken).not.toBe(testUser.accessToken);
-    expect(refreshToken).not.toBe(testUser.refreshToken);
+    expect(tokens.accessToken).not.toBe(testUser.accessToken);
+    expect(tokens.refreshToken).not.toBe(testUser.refreshToken);
   });
 
   test("Auth test login fail", async () => {
@@ -92,24 +91,28 @@ describe("Auth Tests", () => {
 
   test("Test refresh token", async () => {
     const response = await request(app).post(baseUrl + "/refresh").send({
-      refreshToken: testUser.refreshToken,
+      refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
+
+    const tokens = response.body as Tokens;
+
     expect(response.statusCode).toBe(200);
-    expect(response.body.accessToken).toBeDefined();
-    expect(response.body.refreshToken).toBeDefined();
-    testUser.accessToken = response.body.accessToken;
-    testUser.refreshToken = response.body.refreshToken;
+    expect(tokens.accessToken).toBeDefined();
+    expect(tokens.refreshToken).toBeDefined();
+    testUser.accessToken = tokens.accessToken;
+    testUser.refreshToken.push(tokens.refreshToken);
   });
 
   test("Double use refresh token", async () => {
     const response = await request(app).post(baseUrl + "/refresh").send({
-      refreshToken: testUser.refreshToken,
+      refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
     expect(response.statusCode).toBe(200);
-    const refreshTokenNew = response.body.refreshToken;
+    const tokens: Tokens = response.body as Tokens;
+    const refreshTokenNew: string = tokens.refreshToken;
 
     const response2 = await request(app).post(baseUrl + "/refresh").send({
-      refreshToken: testUser.refreshToken,
+      refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
     expect(response2.statusCode).not.toBe(200);
 
@@ -122,16 +125,19 @@ describe("Auth Tests", () => {
   test("Test logout", async () => {
     const response = await request(app).post(baseUrl + "/login").send(testUser);
     expect(response.statusCode).toBe(200);
-    testUser.accessToken = response.body.accessToken;
-    testUser.refreshToken = response.body.refreshToken;
+
+    const tokens = response.body as Tokens;
+
+    testUser.accessToken = tokens.accessToken;
+    testUser.refreshToken.push(tokens.refreshToken);
 
     const response2 = await request(app).post(baseUrl + "/logout").send({
-      refreshToken: testUser.refreshToken,
+      refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
     expect(response2.statusCode).toBe(200);
 
     const response3 = await request(app).post(baseUrl + "/refresh").send({
-      refreshToken: testUser.refreshToken,
+      refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
     expect(response3.statusCode).not.toBe(200);
 
