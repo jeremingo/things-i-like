@@ -4,6 +4,7 @@ import { Express } from 'express';
 
 import initApp from '../server';
 import mongoose from 'mongoose';
+import { StatusCodes } from 'http-status-codes';
 
 let app: Express;
 let mongoServer: MongoMemoryServer;
@@ -22,7 +23,7 @@ afterAll(async () => {
 describe('App Tests', () => {
   test('Test health endpoint', async () => {
     const response = await request(app).get('/health');
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(StatusCodes.OK);
     expect(response.text).toBe('App is running');
   });
 });
