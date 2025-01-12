@@ -5,6 +5,7 @@ import { Express } from "express";
 import { User } from "../models/user";
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import Tokens from "../controllers/tokens";
+import { StatusCodes } from "http-status-codes";
 
 
 let app: Express;
@@ -35,29 +36,29 @@ const testUser: TestUser = {
 describe("Auth Tests", () => {
   test("Auth test register", async () => {
     const response = await request(app).post(baseUrl + "/register").send(testUser);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(StatusCodes.OK);
   });
 
   test("Auth test register fail", async () => {
     const response = await request(app).post(baseUrl + "/register").send(testUser);
-    expect(response.statusCode).not.toBe(200);
+    expect(response.statusCode).not.toBe(StatusCodes.OK);
   });
 
   test("Auth test register fail", async () => {
     const response = await request(app).post(baseUrl + "/register").send({
       email: "sdsdfsd",
     });
-    expect(response.statusCode).not.toBe(200);
+    expect(response.statusCode).not.toBe(StatusCodes.OK);
     const response2 = await request(app).post(baseUrl + "/register").send({
       email: "",
       password: "sdfsd",
     });
-    expect(response2.statusCode).not.toBe(200);
+    expect(response2.statusCode).not.toBe(StatusCodes.OK);
   });
 
   test("Auth test login", async () => {
     const response = await request(app).post(baseUrl + "/login").send(testUser);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(StatusCodes.OK);
     const tokens: Tokens = response.body as Tokens;
     expect(tokens.accessToken).toBeDefined();
     expect(tokens.refreshToken).toBeDefined();
@@ -80,13 +81,13 @@ describe("Auth Tests", () => {
       email: testUser.email,
       password: "sdfsd",
     });
-    expect(response.statusCode).not.toBe(200);
+    expect(response.statusCode).not.toBe(StatusCodes.OK);
 
     const response2 = await request(app).post(baseUrl + "/login").send({
       email: "dsfasd",
       password: "sdfsd",
     });
-    expect(response2.statusCode).not.toBe(200);
+    expect(response2.statusCode).not.toBe(StatusCodes.OK);
   });
 
   test("Test refresh token", async () => {
@@ -96,7 +97,7 @@ describe("Auth Tests", () => {
 
     const tokens = response.body as Tokens;
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(StatusCodes.OK);
     expect(tokens.accessToken).toBeDefined();
     expect(tokens.refreshToken).toBeDefined();
     testUser.accessToken = tokens.accessToken;
@@ -107,24 +108,24 @@ describe("Auth Tests", () => {
     const response = await request(app).post(baseUrl + "/refresh").send({
       refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(StatusCodes.OK);
     const tokens: Tokens = response.body as Tokens;
     const refreshTokenNew: string = tokens.refreshToken;
 
     const response2 = await request(app).post(baseUrl + "/refresh").send({
       refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
-    expect(response2.statusCode).not.toBe(200);
+    expect(response2.statusCode).not.toBe(StatusCodes.OK);
 
     const response3 = await request(app).post(baseUrl + "/refresh").send({
       refreshToken: refreshTokenNew,
     });
-    expect(response3.statusCode).not.toBe(200);
+    expect(response3.statusCode).not.toBe(StatusCodes.OK);
   });
 
   test("Test logout", async () => {
     const response = await request(app).post(baseUrl + "/login").send(testUser);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(StatusCodes.OK);
 
     const tokens = response.body as Tokens;
 
@@ -134,12 +135,12 @@ describe("Auth Tests", () => {
     const response2 = await request(app).post(baseUrl + "/logout").send({
       refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
-    expect(response2.statusCode).toBe(200);
+    expect(response2.statusCode).toBe(StatusCodes.OK);
 
     const response3 = await request(app).post(baseUrl + "/refresh").send({
       refreshToken: testUser.refreshToken[testUser.refreshToken.length - 1],
     });
-    expect(response3.statusCode).not.toBe(200);
+    expect(response3.statusCode).not.toBe(StatusCodes.OK);
 
   });
 });

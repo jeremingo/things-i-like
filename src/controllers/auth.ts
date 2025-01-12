@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { Document } from "mongoose";
 import Tokens from "./tokens";
 import Config from "../env/config";
+import { StatusCodes } from "http-status-codes";
 
 interface CreateUserRequestBody {
   email: string;
@@ -15,14 +16,14 @@ interface CreateUserRequestBody {
 
 const register = async (req: Request<object, object, CreateUserRequestBody>, res: Response) => {
   try {
-    res.status(200).send(await userModel.create({
+    res.status(StatusCodes.CREATED).send(await userModel.create({
       email: req.body.email,
       username: req.body.username,
       displayName: req.body.displayName,
       password: await bcrypt.hash(req.body.password, await bcrypt.genSalt(10)),
     }));
   } catch (err) {
-    res.status(400).send(err);
+    res.status(StatusCodes.BAD_REQUEST).send(err);
   }
 };
 
@@ -59,7 +60,7 @@ const login = async (req: Request<object, object, LoginRequestBody>, res: Respon
     const user = await userModel.findOne({ email: req.body.email });
 
     if (!user || !await bcrypt.compare(req.body.password, user.password)) {
-      res.status(400).send(new Error("wrong username or password"));
+      res.status(StatusCodes.BAD_REQUEST).send(new Error("wrong username or password"));
       return;
     }
     
@@ -71,9 +72,9 @@ const login = async (req: Request<object, object, LoginRequestBody>, res: Respon
 
     user.refreshToken.push(tokens.refreshToken);
     await user.save();
-    res.status(200).send(tokens);
+    res.status(StatusCodes.OK).send(tokens);
   } catch (err) {
-    res.status(400).send(new Error(err as string));
+    res.status(StatusCodes.BAD_REQUEST).send(new Error(err as string));
   }
 };
 
@@ -114,9 +115,9 @@ const logout = async (req: Request<object, object, RefreshTokenBody>, res: Respo
   try {
     const user = await verifyRefreshToken(req.body.refreshToken);
     await user.save();
-    res.status(200).send("success");
+    res.status(StatusCodes.OK).send("success");
   } catch {
-    res.status(400).send("fail");
+    res.status(StatusCodes.BAD_REQUEST).send("fail");
   }
 };
 
@@ -124,7 +125,7 @@ const refresh = async (req: Request<object, object, RefreshTokenBody>, res: Resp
   try {
     const user = await verifyRefreshToken(req.body.refreshToken);
     if (!user) {
-      res.status(400).send("fail");
+      res.status(StatusCodes.BAD_REQUEST).send("fail");
       return;
     }
     const tokens = generateToken(user._id);
@@ -135,9 +136,9 @@ const refresh = async (req: Request<object, object, RefreshTokenBody>, res: Resp
     user.refreshToken.push(tokens.refreshToken);
     await user.save();
 
-    res.status(200).send(tokens);
+    res.status(StatusCodes.OK).send(tokens);
   } catch {
-    res.status(400).send("fail");
+    res.status(StatusCodes.BAD_REQUEST).send("fail");
   }
 };
 
@@ -154,13 +155,13 @@ export const authMiddleware = (
   const token = authorization && authorization.split(" ")[1];
 
   if (!token) {
-    res.status(401).send("Access Denied");
+    res.status(StatusCodes.UNAUTHORIZED).send("Access Denied");
     return;
   }
 
   jwt.verify(token, Config.JWT_SECRET, (err, payload) => {
     if (err) {
-      res.status(401).send("Access Denied");
+      res.status(StatusCodes.UNAUTHORIZED).send("Access Denied");
       return;
     }
     req.params.userId = (payload as Payload)._id;
