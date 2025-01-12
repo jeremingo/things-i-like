@@ -36,24 +36,24 @@ const testUser: TestUser = {
 describe("Auth Tests", () => {
   test("Auth test register", async () => {
     const response = await request(app).post(baseUrl + "/register").send(testUser);
-    expect(response.statusCode).toBe(StatusCodes.OK);
+    expect(response.statusCode).toBe(StatusCodes.CREATED);
   });
 
   test("Auth test register fail", async () => {
     const response = await request(app).post(baseUrl + "/register").send(testUser);
-    expect(response.statusCode).not.toBe(StatusCodes.OK);
+    expect(response.statusCode).not.toBe(StatusCodes.CREATED);
   });
 
   test("Auth test register fail", async () => {
     const response = await request(app).post(baseUrl + "/register").send({
       email: "sdsdfsd",
     });
-    expect(response.statusCode).not.toBe(StatusCodes.OK);
+    expect(response.statusCode).not.toBe(StatusCodes.CREATED);
     const response2 = await request(app).post(baseUrl + "/register").send({
       email: "",
       password: "sdfsd",
     });
-    expect(response2.statusCode).not.toBe(StatusCodes.OK);
+    expect(response2.statusCode).not.toBe(StatusCodes.CREATED);
   });
 
   test("Auth test login", async () => {
