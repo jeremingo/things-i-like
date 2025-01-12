@@ -4,6 +4,7 @@ import { Express } from 'express';
 
 import initApp from '../server';
 import mongoose from 'mongoose';
+import { StatusCodes } from 'http-status-codes';
 
 let app: Express;
 let mongoServer: MongoMemoryServer;
