@@ -6,7 +6,7 @@ export interface User {
   displayName?: string;
   password: string;
   refreshToken?: string[];
-  _id?: string;
+  _id?: mongoose.Types.ObjectId;
 }
 
 const userSchema = new mongoose.Schema<User>({

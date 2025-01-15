@@ -1,7 +1,7 @@
 import userModel, { User } from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import Tokens from "../controllers/tokens";
 import Config from "../env/config";
 
@@ -20,12 +20,12 @@ const register = async (req: CreateUserRequestBody): Promise<User> => {
 };
 
 export type JwtPayload = {
-  _id: string,
+  userId: mongoose.Types.ObjectId,
   random: string
 };
 
-const generateToken = (userId: string): Tokens => {
-  const payload = { _id: userId, random: Math.random().toString() };
+const generateToken = (userId: mongoose.Types.ObjectId): Tokens => {
+  const payload = { userId: userId, random: Math.random().toString() };
   
   return {
     accessToken: jwt.sign(
@@ -38,7 +38,7 @@ const generateToken = (userId: string): Tokens => {
       Config.JWT_SECRET,
       { expiresIn: Config.REFRESH_TOKEN_EXPIRES }
     ),
-    _id: userId
+    userId: userId
   };
 };
 
@@ -68,7 +68,7 @@ const login = async (req: LoginRequestBody): Promise<Tokens> => {
 
 type tUser = Document<unknown, object, User> &
   User &
-  Required<{ _id: string }> &
+  Required<{ _id: mongoose.Types.ObjectId }> &
   { __v: number };
 
 const verifyRefreshToken = async (refreshToken: string | undefined): Promise<tUser> => {
@@ -78,7 +78,7 @@ const verifyRefreshToken = async (refreshToken: string | undefined): Promise<tUs
 
   const decoded = jwt.verify(refreshToken, Config.JWT_SECRET) as JwtPayload;
 
-  const user = await userModel.findById(decoded._id);
+  const user = await userModel.findById(decoded.userId);
 
   if (!user) {
     throw new Error("fail");
