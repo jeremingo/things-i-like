@@ -8,6 +8,7 @@ const app = express();
 
 import indexRoute from './routes/index';
 import authRoute from './routes/auth';
+import postsRoute from './routes/post';
 import Config from './env/config';
 
 app.use(bodyParser.json());
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/', indexRoute);
 app.use('/auth', authRoute);
+app.use('/posts', postsRoute)
 
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));

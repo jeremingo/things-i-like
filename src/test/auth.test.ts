@@ -62,10 +62,10 @@ describe("Auth Tests", () => {
     const tokens: Tokens = response.body as Tokens;
     expect(tokens.accessToken).toBeDefined();
     expect(tokens.refreshToken).toBeDefined();
-    expect(tokens._id).toBeDefined();
+    expect(tokens.userId).toBeDefined();
     testUser.accessToken = tokens.accessToken;
     testUser.refreshToken.push(tokens.refreshToken);
-    testUser._id = tokens._id;
+    testUser._id = tokens.userId;
   });
 
   test("Check tokens are not the same", async () => {

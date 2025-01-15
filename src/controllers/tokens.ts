@@ -1,7 +1,9 @@
+import mongoose from "mongoose";
+
 interface Tokens {
   accessToken: string,
   refreshToken: string,
-  _id: string
+  userId: mongoose.Types.ObjectId
 };
 
 export default Tokens;

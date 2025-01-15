@@ -36,11 +36,11 @@ const refresh = async (req: Request<object, object, RefreshTokenBody>, res: Resp
 };
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const authorization = req.header("authorization");
+  const authorization = req.header("Authorization");
   const token = authorization && authorization.split(" ")[1];
 
   try {
-    req.params.userId = AuthService.verifyAccessToken(token)._id;
+    req.userId = AuthService.verifyAccessToken(token).userId;
     next();
   } catch {
     res.status(StatusCodes.UNAUTHORIZED).send("Access Denied");
