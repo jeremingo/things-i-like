@@ -7,7 +7,6 @@ export default tseslint.config(
       'dist',
       'node_modules',
       'coverage',
-      'eslint.config.mjs'
     ]
   },
   eslint.configs.recommended,
@@ -15,7 +14,9 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        projectService: {
+          allowDefaultProject: ['eslint.config.mjs', 'jest.config.ts'],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
