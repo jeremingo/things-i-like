@@ -6,9 +6,11 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspaces",
-    "start": "npm run start --workspaces",
-    "test": "npm run test --workspaces",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "start:backend": "npm run start --workspace=backend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces"
   },
   "repository": {
@@ -20,5 +22,11 @@
   "bugs": {
     "url": "https://github.com/jeremingo/things-i-like/issues"
   },
-  "homepage": "https://github.com/jeremingo/things-i-like#readme"
+  "homepage": "https://github.com/jeremingo/things-i-like#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint": "^9.17.0",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.2"
+  }
 }
