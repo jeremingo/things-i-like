@@ -6,7 +6,7 @@ COPY /apps/backend /apps/backend
 
 RUN npm install
 
-RUN npm run build:backend
+RUN npm run build --workspace=backend
 
 EXPOSE 3000
 
