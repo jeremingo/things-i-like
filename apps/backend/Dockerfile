@@ -1,8 +1,8 @@
 FROM node:22
 
-COPY package*.json ./
+COPY ./package*.json ./
 
-COPY /apps/backend /apps/backend
+COPY ./apps/backend ./apps/backend
 
 RUN npm install
 
