@@ -46,4 +46,4 @@ jobs:
         run: npm test
 
       - name: Docker Build
-        run: docker build -f apps/backend -t things-i-like-backend:gh-${{ github.run_number }} .
+        run: docker build -f apps/backend/Dockerfile -t things-i-like-backend:gh-${{ github.run_number }} .
