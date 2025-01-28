@@ -4,6 +4,8 @@ COPY ./package*.json ./
 
 COPY ./apps/backend ./apps/backend
 
+RUN npm install -g npm@10.5.1
+
 RUN npm install
 
 RUN npm run build --workspace=backend
