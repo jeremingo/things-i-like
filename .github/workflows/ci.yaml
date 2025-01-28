@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -43,3 +44,9 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Docker Build Backend
+        run: docker build -f apps/backend/Dockerfile -t things-i-like-backend:gh-${{ github.run_number }} .
+
+      - name: Docker Build Frontend
+        run: docker build -f apps/frontend/Dockerfile -t things-i-like-frontend:gh-${{ github.run_number }} .
