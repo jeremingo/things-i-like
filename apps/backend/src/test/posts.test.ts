@@ -5,7 +5,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import postModel, { Post } from '../models/post.model';
 import initApp from '../server';
 import { User } from '../models/user';
-import Tokens from '../controllers/tokens';
+import { Tokens } from '@things-i-like/auth';
 import { StatusCodes } from 'http-status-codes';
 
 let app: Express;

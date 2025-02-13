@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import authService from './services/auth-service';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -9,6 +10,8 @@ const Login: React.FC = () => {
     // Handle login logic here
     console.log('Username:', username);
     console.log('Password:', password);
+
+    authService.login({ email: username, password })
   };
 
   return (

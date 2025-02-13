@@ -2,7 +2,7 @@ import userModel, { User } from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose, { Document } from "mongoose";
-import Tokens from "../controllers/tokens";
+import { Tokens, LoginRequestBody, AuthAPI } from "@things-i-like/auth";
 import Config from "../env/config";
 
 export interface CreateUserRequestBody {
@@ -42,28 +42,25 @@ const generateToken = (userId: mongoose.Types.ObjectId): Tokens => {
   };
 };
 
-export interface LoginRequestBody {
-  email: string;
-  password: string;
-}
+const AuthService: AuthAPI = {
+  login: async (req: LoginRequestBody): Promise<Tokens> => {
+    const user = await userModel.findOne({ email: req.email });
 
-const login = async (req: LoginRequestBody): Promise<Tokens> => {
-  const user = await userModel.findOne({ email: req.email });
+    if (!user || !await bcrypt.compare(req.password, user.password)) {
+      throw new Error("wrong username or password");
+    }
+    
+    const tokens: Tokens = generateToken(user._id);
 
-  if (!user || !await bcrypt.compare(req.password, user.password)) {
-    throw new Error("wrong username or password");
+    if (!user.refreshToken) {
+      user.refreshToken = [];
+    }
+
+    user.refreshToken.push(tokens.refreshToken);
+    await user.save();
+
+    return tokens;
   }
-  
-  const tokens = generateToken(user._id);
-
-  if (!user.refreshToken) {
-    user.refreshToken = [];
-  }
-
-  user.refreshToken.push(tokens.refreshToken);
-  await user.save();
-
-  return tokens;
 };
 
 type tUser = Document<unknown, object, User> &
@@ -131,7 +128,7 @@ const verifyAccessToken = (token: string) => {
 
 export default {
   register,
-  login,
+  AuthService,
   refresh,
   logout,
   verifyAccessToken

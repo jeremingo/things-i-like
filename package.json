@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ],
   "scripts": {
     "dev:backend": "npm run dev --workspace=backend",
@@ -24,6 +25,9 @@
     "url": "https://github.com/jeremingo/things-i-like/issues"
   },
   "homepage": "https://github.com/jeremingo/things-i-like#readme",
+  "dependencies": {
+    "bson": "^6.10.2"
+  },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "eslint": "^9.17.0",

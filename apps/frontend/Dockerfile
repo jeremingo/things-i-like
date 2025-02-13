@@ -4,6 +4,8 @@ COPY ./package*.json ./
 
 COPY ./apps/frontend ./apps/frontend
 
+COPY ./libs ./libs
+
 RUN npm install -g npm@10.5.1
 
 RUN npm install -g serve

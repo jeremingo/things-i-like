@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { Express } from "express";
 import { User } from "../models/user";
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import Tokens from "../controllers/tokens";
+import { Tokens } from "@things-i-like/auth";
 import { StatusCodes } from "http-status-codes";
 
 
