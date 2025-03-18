@@ -1,4 +1,4 @@
-import userModel, { User } from "../models/user";
+import userModel, { toAPIUser, User } from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose, { Document } from "mongoose";
@@ -30,10 +30,10 @@ const generateToken = (userId: mongoose.Types.ObjectId): Tokens => {
 
 const AuthService: AuthAPI = {
   register: async (req: CreateUserRequestBody): Promise<APIUser> => {
-    return await userModel.create({
+    return toAPIUser(await userModel.create({
       ...req,
       password: await bcrypt.hash(req.password, await bcrypt.genSalt(10)),
-    });
+    }));
   },
 
   login: async (req: LoginRequestBody): Promise<Tokens> => {
