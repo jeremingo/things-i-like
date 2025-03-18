@@ -2,33 +2,46 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from './services/auth-service';
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    authService.login({ email: email, password })
-      .then(() => {
-        alert('Login successful');
-      })
-      .catch((error) => {
-        console.error('Login failed:', error);
-        alert('Login failed. Please try again.');
-      });
+    setError(null);
+
+    try {
+      await authService.register({ email, username, password });
+      console.log('Registration successful');
+      navigate('/login');
+    } catch (err) {
+      console.error('Registration failed:', err);
+      setError('Failed to register. Please try again.');
+    }
   };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
-        <h2>Login</h2>
+        <h2>Register</h2>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <label htmlFor="email">Email</label>
         <input
-          type="text"
+          type="email"
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <label htmlFor="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
         />
         <label htmlFor="password">Password</label>
@@ -39,12 +52,12 @@ const Login: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit" style={{ marginTop: '20px' }}>Login</button>
+        <button type="submit" style={{ marginTop: '20px' }}>Register</button>
         <p style={{ marginTop: '20px', textAlign: 'center' }}>
-          Don't have an account?{' '}
+          Already have an account?{' '}
           <button
             type="button"
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/login')}
             style={{
               background: 'none',
               border: 'none',
@@ -54,7 +67,7 @@ const Login: React.FC = () => {
               padding: 0,
             }}
           >
-            Register here
+            Login here
           </button>
         </p>
       </form>
@@ -62,4 +75,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Register;
