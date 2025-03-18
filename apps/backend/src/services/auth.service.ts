@@ -2,22 +2,8 @@ import userModel, { User } from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose, { Document } from "mongoose";
-import { Tokens, LoginRequestBody, AuthAPI } from "@things-i-like/auth";
+import { Tokens, LoginRequestBody, AuthAPI, CreateUserRequestBody, User as APIUser } from "@things-i-like/auth";
 import Config from "../env/config";
-
-export interface CreateUserRequestBody {
-  email: string;
-  username: string;
-  displayName?: string;
-  password: string;
-}
-
-const register = async (req: CreateUserRequestBody): Promise<User> => {
-  return await userModel.create({
-    ...req,
-    password: await bcrypt.hash(req.password, await bcrypt.genSalt(10)),
-  });
-};
 
 export type JwtPayload = {
   userId: mongoose.Types.ObjectId,
@@ -43,6 +29,13 @@ const generateToken = (userId: mongoose.Types.ObjectId): Tokens => {
 };
 
 const AuthService: AuthAPI = {
+  register: async (req: CreateUserRequestBody): Promise<APIUser> => {
+    return await userModel.create({
+      ...req,
+      password: await bcrypt.hash(req.password, await bcrypt.genSalt(10)),
+    });
+  },
+
   login: async (req: LoginRequestBody): Promise<Tokens> => {
     const user = await userModel.findOne({ email: req.email });
 
@@ -127,7 +120,6 @@ const verifyAccessToken = (token: string) => {
 };
 
 export default {
-  register,
   AuthService,
   refresh,
   logout,

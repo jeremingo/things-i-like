@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { Tokens, LoginRequestBody } from "@things-i-like/auth";
-import AuthService, { CreateUserRequestBody, RefreshTokenBody } from "../services/auth.service";
+import { Tokens, LoginRequestBody, CreateUserRequestBody, User } from "@things-i-like/auth";
+import AuthService, { RefreshTokenBody } from "../services/auth.service";
 import { StatusCodes } from "http-status-codes";
 
-const register = async (req: Request<object, object, CreateUserRequestBody>, res: Response) => {
+const register = async (req: Request<object, object, CreateUserRequestBody>, res: Response<User | { error: string }>) => {
   try {
-    res.status(StatusCodes.CREATED).send(await AuthService.register(req.body));
+    res.status(StatusCodes.CREATED).send(await AuthService.AuthService.register(req.body));
   } catch (err) {
-    res.status(StatusCodes.BAD_REQUEST).send(err);
+    res.status(StatusCodes.BAD_REQUEST).send({ error: (err as Error).message });
   }
 };
 

@@ -1,12 +1,9 @@
 import mongoose from 'mongoose';
+import { User as APIUser } from '@things-i-like/auth';
 
-export interface User {
-  email: string;
-  username: string;
-  displayName?: string;
+export interface User extends APIUser{
   password: string;
   refreshToken?: string[];
-  _id?: mongoose.Types.ObjectId;
 }
 
 const userSchema = new mongoose.Schema<User>({
