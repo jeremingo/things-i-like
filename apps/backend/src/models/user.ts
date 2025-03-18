@@ -1,12 +1,14 @@
 import mongoose from 'mongoose';
+import { User as APIUser } from '@things-i-like/auth';
+import _ from 'lodash';
 
-export interface User {
-  email: string;
-  username: string;
-  displayName?: string;
+export interface User extends APIUser{
   password: string;
   refreshToken?: string[];
-  _id?: mongoose.Types.ObjectId;
+}
+
+export const toAPIUser = (user: mongoose.Document<unknown, object, User>): APIUser => {
+  return _.omit(user.toObject() as User, "password", "refreshToken");
 }
 
 const userSchema = new mongoose.Schema<User>({
