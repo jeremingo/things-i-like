@@ -16,4 +16,9 @@ const AuthService: AuthAPI = {
   }
 };
 
+export const isLoggedIn = (): boolean => {
+  return !!localStorage.getItem('accessToken');
+};
+
+
 export default AuthService;
