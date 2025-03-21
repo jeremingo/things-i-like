@@ -15,6 +15,11 @@ const PostService: PostAPI = {
       headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }
     })).data;
   },
+  update: async (req: Omit<Post, 'userId'>) => {
+    return (await apiClient.post(`/posts/${req._id}`, req, {
+      headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }
+    })).data;
+  },
   deleteItem: async (req: ObjectId) => {
     await apiClient.delete(`/posts/${req}`, {
       headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }

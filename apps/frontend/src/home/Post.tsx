@@ -5,6 +5,7 @@ import userService from '../services/user-service';
 import authService from '../services/auth-service';
 import postService from '../services/post-service';
 import { ObjectId } from 'bson';
+import { useNavigate } from 'react-router-dom';
 
 interface PostProps {
   post: APIPost;
@@ -13,6 +14,7 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ post, onDelete }) => {
   const [user, setUser] = React.useState<User | null>(null);
+  const navigate = useNavigate()
 
   useEffect(() => {
     userService.getById(post.userId).then((user) => setUser(user));
@@ -25,9 +27,21 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
     });
   }
 
+  function handleEdit(): void {
+    navigate(`/edit-post/${post._id}`);
+  }
+
   return (
     <>{ authService.isLoggedIn() && authService.getUserId() === post.userId &&
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}> 
+        <button onClick={ handleEdit } style={{
+          padding: '8px 16px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}>Edit</button>
         <button onClick={ handleDelete } style={{
           padding: '8px 16px',
           backgroundColor: '#007bff',

@@ -5,6 +5,7 @@ import Register from './Register'
 import Navbar from './Navbar'
 import Profile from './Profile'
 import NewPost from './NewPost'
+import EditPost from './EditPost'
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/user/:userId' element={<Profile />} />
         <Route path='/new-post' element={<NewPost />} />
+        <Route path='/edit-post/:postId' element={<EditPost />} />
       </Routes>
     </>
   )

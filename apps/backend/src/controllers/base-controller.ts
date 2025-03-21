@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model, ObjectId } from "mongoose";
 import BaseRepository from "../services/base-repository";
 import { StatusCodes } from "http-status-codes";
 import NotFoundError from "../services/not-found-error";
@@ -34,6 +34,14 @@ class BaseController<T> {
   async create(req: Request<object, object, T>, res: Response<T | Error>) {
     try {
       res.status(StatusCodes.CREATED).send(await this.baseRepository.create(req.body));
+    } catch (error) {
+      res.status(StatusCodes.BAD_REQUEST).send(error instanceof Error ? error : new Error(error as string));
+    }
+  }
+
+  async update(req: Request<{ id: ObjectId}, object, T>, res: Response<T | Error>) {
+    try {
+      res.status(StatusCodes.OK).send(await this.baseRepository.update(req.params.id ,req.body));
     } catch (error) {
       res.status(StatusCodes.BAD_REQUEST).send(error instanceof Error ? error : new Error(error as string));
     }
