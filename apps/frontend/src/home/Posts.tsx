@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Post from './Post';
 import postService from '../services/post-service';
 import { Post as APIPost } from '@things-i-like/post';
+import { ObjectId } from 'bson';
 
 interface PostsProps {
   filter: Partial<APIPost>;
@@ -36,13 +37,17 @@ const Posts: React.FC<Partial<PostsProps>> = ({ filter }) => {
     return <p style={{ color: 'red' }}>{error}</p>;
   }
 
+  function handleDelete(postId: ObjectId): void {
+    setPosts(posts.filter((post) => post._id !== postId));
+  }
+
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h1>Posts</h1>
       {posts.length === 0 ? (
         <p>No posts available.</p>
       ) : (
-        posts.map((post) => <Post key={post._id!.toString()} post={post} />)
+        posts.map((post) => <Post key={post._id!.toString()} post={post} onDelete={handleDelete} />)
       )}
     </div>
   );

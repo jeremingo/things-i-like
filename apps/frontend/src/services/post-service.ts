@@ -16,7 +16,9 @@ const PostService: PostAPI = {
     })).data;
   },
   deleteItem: async (req: ObjectId) => {
-    await apiClient.delete(`/posts/${req}`);
+    await apiClient.delete(`/posts/${req}`, {
+      headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }
+    });
   }
 };
 
