@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService, { isLoggedIn } from './services/auth-service';
+import authService from './services/auth-service';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -8,7 +8,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn()) {
+    if (authService.isLoggedIn()) {
       navigate('/');
     }
   }, [navigate]);

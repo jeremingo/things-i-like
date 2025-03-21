@@ -1,16 +1,15 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import authService, { getUserId, isLoggedIn } from './services/auth-service';
-import { Tokens } from '@things-i-like/auth';
+import authService from './services/auth-service';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
+  const [isLoggedIn, setLoggedIn] = React.useState(authService.isLoggedIn());
 
   useEffect(() => {
     const handleStorageChange = () => {
       console.log('Storage changed');
-      setLoggedIn(isLoggedIn());
+      setLoggedIn(authService.isLoggedIn());
     };
 
     window.addEventListener('storage', handleStorageChange);
@@ -23,15 +22,15 @@ const Navbar: React.FC = () => {
   }, []);
 
   const handleProfileClick = () => {
-    if(loggedIn) {
-      navigate('/user/' + getUserId());
+    if(isLoggedIn) {
+      navigate('/user/' + authService.getUserId());
     } else {
       navigate('/login');
     }
   };
   
   const handleLogout = () => {
-    authService.logout({ refreshToken: (JSON.parse(localStorage.getItem('tokens') || '{}') as Tokens).refreshToken });
+    authService.logout();
     navigate('/');
   };
 
@@ -68,7 +67,7 @@ const Navbar: React.FC = () => {
         }}>
           Profile 
         </div>
-        { loggedIn && (
+        { isLoggedIn && (
           <div onClick={ handleLogout } style={{
             cursor: 'pointer',
             color: 'white',
