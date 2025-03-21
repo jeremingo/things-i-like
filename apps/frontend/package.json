@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@things-i-like/auth": "^1.0.0",
+    "@things-i-like/post": "^1.0.0",
     "@things-i-like/user": "^1.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

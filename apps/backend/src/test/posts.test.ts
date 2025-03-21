@@ -2,11 +2,12 @@ import request from 'supertest';
 import { Express } from 'express';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import postModel, { Post } from '../models/post.model';
+import postModel from '../models/post.model';
 import initApp from '../server';
 import { User } from '../models/user';
 import { Tokens } from '@things-i-like/auth';
 import { StatusCodes } from 'http-status-codes';
+import { Post } from '@things-i-like/post';
 
 let app: Express;
 let mongoServer: MongoMemoryServer;
