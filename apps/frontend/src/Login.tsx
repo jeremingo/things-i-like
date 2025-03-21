@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from './services/auth-service';
+import authService, { isLoggedIn } from './services/auth-service';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isLoggedIn()) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     authService.login({ email: email, password })
       .then(() => {
         alert('Login successful');
+        navigate('/');
       })
       .catch((error) => {
         console.error('Login failed:', error);

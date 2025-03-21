@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from './services/auth-service';
+import authService, { isLoggedIn } from './services/auth-service';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -8,6 +8,12 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
