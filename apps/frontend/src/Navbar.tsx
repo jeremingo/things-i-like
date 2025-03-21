@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUserId, isLoggedIn } from './services/auth-service';
+import authService, { getUserId, isLoggedIn } from './services/auth-service';
+import { Tokens } from '@things-i-like/auth';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      console.log('Storage changed');
+      setLoggedIn(isLoggedIn());
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('authChange', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authChange', handleStorageChange);
+    }
+  }, []);
 
   const handleProfileClick = () => {
-    if(isLoggedIn()) {
+    if(loggedIn) {
       navigate('/user/' + getUserId());
     } else {
       navigate('/login');
     }
+  };
+  
+  const handleLogout = () => {
+    authService.logout({ refreshToken: (JSON.parse(localStorage.getItem('tokens') || '{}') as Tokens).refreshToken });
+    navigate('/');
   };
 
   return (
@@ -37,13 +59,25 @@ const Navbar: React.FC = () => {
         <Link to="/login" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>Login</Link>
         <Link to="/register" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>Register</Link>
       </div>
-      <div onClick={handleProfileClick} style={{
-        cursor: 'pointer',
-        color: 'white',
-        fontSize: '18px',
-        fontWeight: 'bold',
-      }}>
-        Profile 
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <div onClick={handleProfileClick} style={{
+          cursor: 'pointer',
+          color: 'white',
+          fontSize: '18px',
+          fontWeight: 'bold',
+        }}>
+          Profile 
+        </div>
+        { loggedIn && (
+          <div onClick={ handleLogout } style={{
+            cursor: 'pointer',
+            color: 'white',
+            fontSize: '18px',
+            fontWeight: 'bold',
+          }}>
+            Log out
+          </div>
+        )}
       </div>
     </nav>
   );
