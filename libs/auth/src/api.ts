@@ -15,5 +15,5 @@ export interface CreateUserRequestBody {
 
 export interface AuthAPI {
   register(req: CreateUserRequestBody): Promise<User>;
-  login(req: LoginRequestBody): Promise<{ tokens: Tokens, user: User }>;
+  login(req: LoginRequestBody): Promise<Tokens>;
 }

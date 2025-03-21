@@ -59,7 +59,7 @@ describe("Auth Tests", () => {
   test("Auth test login", async () => {
     const response = await request(app).post(baseUrl + "/login").send(testUser);
     expect(response.statusCode).toBe(StatusCodes.OK);
-    const tokens: Tokens = (response.body as { tokens: Tokens, user: User }).tokens;
+    const tokens: Tokens = response.body as Tokens;
     expect(tokens.accessToken).toBeDefined();
     expect(tokens.refreshToken).toBeDefined();
     expect(tokens.userId).toBeDefined();
@@ -70,7 +70,7 @@ describe("Auth Tests", () => {
 
   test("Check tokens are not the same", async () => {
     const response = await request(app).post(baseUrl + "/login").send(testUser);
-    const tokens = (response.body as { tokens: Tokens, user: User }).tokens;
+    const tokens = response.body as Tokens;
 
     expect(tokens.accessToken).not.toBe(testUser.accessToken);
     expect(tokens.refreshToken).not.toBe(testUser.refreshToken);
@@ -127,7 +127,7 @@ describe("Auth Tests", () => {
     const response = await request(app).post(baseUrl + "/login").send(testUser);
     expect(response.statusCode).toBe(StatusCodes.OK);
 
-    const tokens = (response.body as { tokens: Tokens, user: User }).tokens;
+    const tokens = response.body as Tokens;
 
     testUser.accessToken = tokens.accessToken;
     testUser.refreshToken.push(tokens.refreshToken);
