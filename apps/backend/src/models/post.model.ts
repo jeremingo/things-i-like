@@ -1,14 +1,8 @@
 import mongoose from 'mongoose';
-
-export interface Post {
-  userId: mongoose.Types.ObjectId;
-  title: string;
-  content?: string;
-  _id?: mongoose.Types.ObjectId;
-}
+import { Post } from '@things-i-like/post';
 
 const postSchema = new mongoose.Schema<Post>({
-  userId: { type: mongoose.Schema.Types.ObjectId, required: true, unique: true, },
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true, },
   title: { type: String, required: true },
   content: { type: String, required: false, }
 });

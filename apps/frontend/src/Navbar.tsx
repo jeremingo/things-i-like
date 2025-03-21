@@ -68,14 +68,21 @@ const Navbar: React.FC = () => {
           Profile 
         </div>
         { isLoggedIn && (
-          <div onClick={ handleLogout } style={{
+          <><div onClick={() => navigate('/new-post')} style={{
             cursor: 'pointer',
             color: 'white',
             fontSize: '18px',
             fontWeight: 'bold',
           }}>
-            Log out
-          </div>
+            New Post
+          </div><div onClick={handleLogout} style={{
+            cursor: 'pointer',
+            color: 'white',
+            fontSize: '18px',
+            fontWeight: 'bold',
+          }}>
+              Log out
+            </div></>
         )}
       </div>
     </nav>
