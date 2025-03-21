@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { isLoggedIn } from './services/auth-service';
+import { getUserId, isLoggedIn } from './services/auth-service';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
     if(isLoggedIn()) {
-      alert('User is logged in');
+      navigate('/user/' + getUserId());
     } else {
       navigate('/login');
     }

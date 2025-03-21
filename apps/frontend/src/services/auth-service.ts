@@ -1,3 +1,4 @@
+import { ObjectId } from "bson";
 import apiClient from "./api-client";
 import { AuthAPI, CreateUserRequestBody, LoginRequestBody, Tokens, User } from "@things-i-like/auth";
 
@@ -17,6 +18,10 @@ const AuthService: AuthAPI = {
 
 export const isLoggedIn = (): boolean => {
   return !!localStorage.getItem('tokens');
+};
+
+export const getUserId = (): ObjectId | null => {
+  return (JSON.parse(localStorage.getItem('tokens') || '{}') as Tokens)?.userId;
 };
 
 
