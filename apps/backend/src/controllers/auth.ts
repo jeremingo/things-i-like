@@ -11,7 +11,7 @@ const register = async (req: Request<object, object, CreateUserRequestBody>, res
   }
 };
 
-const login = async (req: Request<object, object, LoginRequestBody>, res: Response<Tokens | { error: string }>) => {
+const login = async (req: Request<object, object, LoginRequestBody>, res: Response<{ tokens: Tokens, user: User }| { error: string }>) => {
   try {
     res.status(StatusCodes.OK).send(await AuthService.AuthService.login(req.body));
   } catch (err) {

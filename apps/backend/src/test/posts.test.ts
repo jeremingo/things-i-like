@@ -24,7 +24,7 @@ beforeAll(async () => {
   user = registerResponse.body as User;
   const loginResponse = await request(app).post('/auth/login').send({ email: user.email, password: 'password' });
 
-  token = loginResponse.body as Tokens;
+  token = (loginResponse.body as { tokens: Tokens, user: User }).tokens;
 });
 
 afterAll(async () => {

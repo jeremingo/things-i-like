@@ -36,7 +36,7 @@ const AuthService: AuthAPI = {
     }));
   },
 
-  login: async (req: LoginRequestBody): Promise<Tokens> => {
+  login: async (req: LoginRequestBody): Promise<{ tokens: Tokens, user: APIUser }> => {
     const user = await userModel.findOne({ email: req.email });
 
     if (!user || !await bcrypt.compare(req.password, user.password)) {
@@ -52,7 +52,7 @@ const AuthService: AuthAPI = {
     user.refreshToken.push(tokens.refreshToken);
     await user.save();
 
-    return tokens;
+    return { tokens: tokens, user: toAPIUser(user) };
   }
 };
 
