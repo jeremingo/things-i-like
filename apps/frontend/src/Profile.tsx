@@ -4,6 +4,7 @@ import authService from './services/auth-service';
 import { User } from '@things-i-like/auth';
 import userService from './services/user-service';
 import { ObjectId } from 'bson';
+import Posts from './home/Posts';
 
 const Profile: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -36,7 +37,7 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <><div style={{ padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>{user.username}'s Profile</h1>
         {authService.getUserId()?.toString() === userId && (
@@ -58,6 +59,9 @@ const Profile: React.FC = () => {
       <p>Welcome to {user.username}'s profile page!</p>
       <p>Email: {user.email}</p>
     </div>
+    <div>
+      <Posts filter={{ userId: user._id }} />
+    </div></>
   );
 };
 
