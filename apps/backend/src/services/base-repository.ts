@@ -1,7 +1,7 @@
 import mongoose, { Model } from "mongoose";
 import NotFoundError from "./not-found-error";
 
-class BaseService<T> {
+class BaseRepository<T> {
     model: Model<T>;
 
     constructor(model: Model<T>) {
@@ -33,4 +33,4 @@ class BaseService<T> {
   };
 }
 
-export default BaseService
+export default BaseRepository
