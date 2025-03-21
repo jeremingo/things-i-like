@@ -6,8 +6,7 @@ const AuthService: AuthAPI = {
     const response = await apiClient.post("/auth/login", req);
     const tokens: Tokens = response.data;
 
-    localStorage.setItem('accessToken', tokens.accessToken);
-    localStorage.setItem('refreshToken', tokens.refreshToken);
+    localStorage.setItem('tokens', JSON.stringify(tokens));
 
     return tokens;
   },
@@ -17,7 +16,7 @@ const AuthService: AuthAPI = {
 };
 
 export const isLoggedIn = (): boolean => {
-  return !!localStorage.getItem('accessToken');
+  return !!localStorage.getItem('tokens');
 };
 
 
