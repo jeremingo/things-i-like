@@ -13,7 +13,12 @@ export interface CreateUserRequestBody {
   password: string;
 }
 
+export interface RefreshTokenBody {
+  refreshToken: string;
+}
+
 export interface AuthAPI {
   register(req: CreateUserRequestBody): Promise<User>;
   login(req: LoginRequestBody): Promise<Tokens>;
+  logout(req: RefreshTokenBody): Promise<void>;
 }

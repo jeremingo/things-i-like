@@ -1,16 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUserId, isLoggedIn } from './services/auth-service';
+import authService from './services/auth-service';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setLoggedIn] = React.useState(authService.isLoggedIn());
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      console.log('Storage changed');
+      setLoggedIn(authService.isLoggedIn());
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('authChange', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authChange', handleStorageChange);
+    }
+  }, []);
 
   const handleProfileClick = () => {
-    if(isLoggedIn()) {
-      navigate('/user/' + getUserId());
+    if(isLoggedIn) {
+      navigate('/user/' + authService.getUserId());
     } else {
       navigate('/login');
     }
+  };
+  
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/');
   };
 
   return (
@@ -37,13 +58,25 @@ const Navbar: React.FC = () => {
         <Link to="/login" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>Login</Link>
         <Link to="/register" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>Register</Link>
       </div>
-      <div onClick={handleProfileClick} style={{
-        cursor: 'pointer',
-        color: 'white',
-        fontSize: '18px',
-        fontWeight: 'bold',
-      }}>
-        Profile 
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <div onClick={handleProfileClick} style={{
+          cursor: 'pointer',
+          color: 'white',
+          fontSize: '18px',
+          fontWeight: 'bold',
+        }}>
+          Profile 
+        </div>
+        { isLoggedIn && (
+          <div onClick={ handleLogout } style={{
+            cursor: 'pointer',
+            color: 'white',
+            fontSize: '18px',
+            fontWeight: 'bold',
+          }}>
+            Log out
+          </div>
+        )}
       </div>
     </nav>
   );

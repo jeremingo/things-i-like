@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { Tokens, LoginRequestBody, CreateUserRequestBody, User } from "@things-i-like/auth";
-import AuthService, { RefreshTokenBody } from "../services/auth.service";
+import { Tokens, LoginRequestBody, CreateUserRequestBody, User, RefreshTokenBody } from "@things-i-like/auth";
+import AuthService from "../services/auth.service";
 import { StatusCodes } from "http-status-codes";
 
 const register = async (req: Request<object, object, CreateUserRequestBody>, res: Response<User | { error: string }>) => {
@@ -22,7 +22,7 @@ const login = async (req: Request<object, object, LoginRequestBody>, res: Respon
 
 const logout = async (req: Request<object, object, RefreshTokenBody>, res: Response) => {
   try {
-    res.status(StatusCodes.OK).send(await AuthService.logout(req.body));
+    res.status(StatusCodes.OK).send(await AuthService.AuthService.logout(req.body));
   } catch {
     res.status(StatusCodes.BAD_REQUEST).send("fail");
   }

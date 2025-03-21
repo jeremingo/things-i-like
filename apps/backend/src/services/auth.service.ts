@@ -2,7 +2,7 @@ import userModel, { toAPIUser, User } from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose, { Document } from "mongoose";
-import { Tokens, LoginRequestBody, AuthAPI, CreateUserRequestBody, User as APIUser } from "@things-i-like/auth";
+import { Tokens, LoginRequestBody, AuthAPI, CreateUserRequestBody, User as APIUser, RefreshTokenBody } from "@things-i-like/auth";
 import Config from "../env/config";
 
 export type JwtPayload = {
@@ -53,6 +53,11 @@ const AuthService: AuthAPI = {
     await user.save();
 
     return tokens;
+  },
+
+  logout: async (req: RefreshTokenBody): Promise<void> => {
+    const user = await verifyRefreshToken(req.refreshToken);
+    await user.save();
   }
 };
 
@@ -85,15 +90,6 @@ const verifyRefreshToken = async (refreshToken: string | undefined): Promise<tUs
   return user;
 };
 
-export interface RefreshTokenBody {
-  refreshToken: string;
-}
-
-const logout = async (req: RefreshTokenBody): Promise<void> => {
-  const user = await verifyRefreshToken(req.refreshToken);
-  await user.save();
-};
-
 const refresh = async (req: RefreshTokenBody): Promise<Tokens> => {
   const user = await verifyRefreshToken(req.refreshToken);
   if (!user) {
@@ -122,6 +118,5 @@ const verifyAccessToken = (token: string) => {
 export default {
   AuthService,
   refresh,
-  logout,
   verifyAccessToken
 };
