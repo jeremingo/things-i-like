@@ -9,6 +9,7 @@ const app = express();
 import indexRoute from './routes/index';
 import authRoute from './routes/auth';
 import postsRoute from './routes/post';
+import usersRoute from './routes/user';
 import Config from './env/config';
 
 app.use(bodyParser.json());
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 app.use('/', indexRoute);
 app.use('/auth', authRoute);
 app.use('/posts', postsRoute)
+app.use('/users', usersRoute)
 
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
