@@ -3,6 +3,7 @@ import Home from './Home'
 import Login from './Login'
 import Register from './Register'
 import Navbar from './Navbar'
+import Profile from './Profile'
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/user/:userId' element={<Profile />} />
       </Routes>
     </>
   )

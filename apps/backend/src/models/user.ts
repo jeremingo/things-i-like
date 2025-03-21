@@ -7,8 +7,12 @@ export interface User extends APIUser{
   refreshToken?: string[];
 }
 
-export const toAPIUser = (user: mongoose.Document<unknown, object, User>): APIUser => {
-  return _.omit(user.toObject() as User, "password", "refreshToken");
+export const toAPIUser = (user: User): APIUser => {
+  if (user instanceof mongoose.Document) {
+    user = user.toObject() as User;
+  }
+
+  return _.omit(user, "password", "refreshToken");
 }
 
 const userSchema = new mongoose.Schema<User>({
