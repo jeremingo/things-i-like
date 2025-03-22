@@ -7,6 +7,7 @@ import Profile from './Profile'
 import NewPost from './NewPost'
 import EditPost from './EditPost'
 import EditUser from './EditUser'
+import PostPage from './PostPage'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
         <Route path='/new-post' element={<NewPost />} />
         <Route path='/edit-post/:postId' element={<EditPost />} />
         <Route path='/settings' element={<EditUser />} />
+        <Route path='/post/:postId' element={<PostPage />} />
       </Routes>
     </>
   )
