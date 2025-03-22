@@ -4,6 +4,7 @@ export default class Config {
   static JWT_SECRET: string;
   static TOKEN_EXPIRES: string;
   static REFRESH_TOKEN_EXPIRES: string;
+  static DOMAIN_BASE: string;
 
   static load(): void {
     this.DATABASE_URL = this.getEnvironmentVariable('DATABASE_URL');
@@ -11,6 +12,7 @@ export default class Config {
     this.JWT_SECRET = this.getEnvironmentVariable('JWT_SECRET');
     this.TOKEN_EXPIRES = this.getEnvironmentVariable('TOKEN_EXPIRES');
     this.REFRESH_TOKEN_EXPIRES = this.getEnvironmentVariable('REFRESH_TOKEN_EXPIRES');
+    this.DOMAIN_BASE = this.getEnvironmentVariable('DOMAIN_BASE');
   }
   
   private static getEnvironmentVariable(key: string): string {
