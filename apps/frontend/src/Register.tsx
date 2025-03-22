@@ -1,12 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from './services/auth-service';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const schema = z.object({
+  email: z.string()
+    .email('Enter a valid email')
+    .nonempty('Email is required'),
+  username: z.string()
+    .nonempty('Username is required'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters long')
+    .nonempty('Password is required'),
+})
+
+type FormData = z.infer<typeof schema>;
 
 const Register: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const { register, handleSubmit, formState } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    mode: 'onChange'
+  });
+
+  const onSubmit = async (data: FormData) => {
+    await authService.register(data).then(() => {
+      console.log('Registration successful');
+      navigate('/login');
+    }).catch((err) => {
+      console.error('Registration failed:', err);
+      alert('Registration failed. Please try again.');
+    });
+  }
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,49 +42,23 @@ const Register: React.FC = () => {
     }
   }, [navigate]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null);
-
-    try {
-      await authService.register({ email, username, password });
-      console.log('Registration successful');
-      navigate('/login');
-    } catch (err) {
-      console.error('Registration failed:', err);
-      setError('Failed to register. Please try again.');
-    }
-  };
-
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
         <h2>Register</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+
         <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <input {...register('email')} type="email" id="email" />
+        {formState.errors.email && <p>{formState.errors.email?.message}</p>}
+
         <label htmlFor="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
+        <input {...register('username')} type="text" id="username" />
+        {formState.errors.username && <p>{formState.errors.username?.message}</p>}
+
         <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <input {...register('password')} type="password" id="password" />
+        {formState.errors.password && <p>{formState.errors.password?.message}</p>}
+
         <button type="submit" style={{ marginTop: '20px' }}>Register</button>
         <p style={{ marginTop: '20px', textAlign: 'center' }}>
           Already have an account?{' '}
