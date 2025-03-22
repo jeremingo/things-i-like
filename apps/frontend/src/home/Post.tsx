@@ -15,6 +15,24 @@ interface PostProps {
 const Post: React.FC<PostProps> = ({ post, onDelete }) => {
   const [user, setUser] = React.useState<User | null>(null);
   const navigate = useNavigate()
+  const [isLoggedIn, setLoggedIn] = React.useState(authService.isLoggedIn());
+  const [likeCount, setLikeCount] = React.useState(post.likeCount);
+  const [hasLiked, setHasLiked] = React.useState(false);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      console.log('Storage changed');
+      setLoggedIn(authService.isLoggedIn());
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('authChange', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authChange', handleStorageChange);
+    }
+  }, []);
 
   useEffect(() => {
     userService.getById(post.userId).then((user) => setUser(user));
@@ -27,12 +45,44 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
     });
   }
 
+  useEffect(() => {
+    if(isLoggedIn) {
+      postService.hasLiked(post._id!).then((hasLiked) => setHasLiked(hasLiked));
+    } else {
+      setHasLiked(false);
+    }
+  }
+  , [isLoggedIn, post._id]);
+
+
   function handleEdit(): void {
     navigate(`/edit-post/${post._id}`);
   }
 
+  async function handleLike(): Promise<void> {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      if (hasLiked) {
+        await postService.unlike(post._id!);
+        setLikeCount((prev) => prev - 1);
+        setHasLiked(false);
+      } else {
+        await postService.like(post._id!);
+        setLikeCount((prev) => prev + 1);
+        setHasLiked(true);
+      }
+    } catch (err) {
+      console.error('Failed to toggle like:', err);
+      alert('Failed to toggle like. Please try again.');
+    }
+  }
+
   return (
-    <>{ authService.isLoggedIn() && authService.getUserId() === post.userId &&
+    <>{ isLoggedIn && authService.getUserId() === post.userId &&
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}> 
         <button onClick={ handleEdit } style={{
           padding: '8px 16px',
@@ -60,10 +110,27 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
       marginBottom: '16px',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     }}>
-        <h2 style={{ margin: '0 0 8px 0', color: '#333' }}>{post.title}</h2>
-        <p style={{ margin: '0 0 16px 0', color: '#555' }}>{post.content}</p>
-        <p style={{ margin: '0', fontStyle: 'italic', color: '#777' }}>Posted by: {user?.username}</p>
-      </div></>
+      <h2 style={{ margin: '0 0 8px 0', color: '#333' }}>{post.title}</h2>
+      <p style={{ margin: '0 0 16px 0', color: '#555' }}>{post.content}</p>
+      <p style={{ margin: '0', fontStyle: 'italic', color: '#777' }}>Posted by: {user?.username}</p>
+      <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+          <button
+            onClick={handleLike}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: hasLiked ? '#28a745' : '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginRight: '10px',
+            }}
+          >
+            Like
+          </button>
+          <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
+        </div>
+    </div></>
   );
 };
 
