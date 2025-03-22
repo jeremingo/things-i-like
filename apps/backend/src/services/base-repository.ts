@@ -1,4 +1,4 @@
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model, ObjectId } from "mongoose";
 import NotFoundError from "./not-found-error";
 
 class BaseRepository<T> {
@@ -23,6 +23,16 @@ class BaseRepository<T> {
 
   async create(body: T): Promise<T> {
     return await this.model.create(body);
+  };
+
+  async update(id: ObjectId, body: T): Promise<T> {
+    const updatedItem = await this.model.findByIdAndUpdate(id, body, { new: true });
+    if (updatedItem != null) {
+      return updatedItem;
+    }
+    else {
+      throw new NotFoundError();
+    }
   };
 
   async deleteItem(id: mongoose.Types.ObjectId): Promise<void> {
