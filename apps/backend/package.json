@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@things-i-like/auth": "^1.0.0",
+    "@things-i-like/comment": "^1.0.0",
     "@things-i-like/post": "^1.0.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
