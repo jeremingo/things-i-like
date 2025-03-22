@@ -41,6 +41,10 @@ class BaseRepository<T> {
       throw new NotFoundError();
     }
   };
+
+  async deleteAll(filter: Partial<T>): Promise<void> {
+    await this.model.deleteMany(filter);
+  }
 }
 
 export default BaseRepository

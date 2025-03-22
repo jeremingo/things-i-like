@@ -29,6 +29,16 @@ const PostService: PostAPI = {
     await apiClient.post(`/posts/${req}/like`, {}, {
       headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }
     });
+  },
+  hasLiked: async (req: ObjectId): Promise<boolean> => {
+    return (await apiClient.post(`/posts/${req}/has-liked`, {}, {
+      headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }
+    })).data;
+  },
+  unlike: async (req: ObjectId) => {
+    await apiClient.post(`/posts/${req}/unlike`, {}, {
+      headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }
+    });
   }
 };
 

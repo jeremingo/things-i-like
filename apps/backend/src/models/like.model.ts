@@ -11,4 +11,6 @@ const likeSchema = new mongoose.Schema<Like>({
   postId: { type: mongoose.Schema.Types.ObjectId, required: true },
 });
 
+likeSchema.index({ userId: 1, postId: 1 }, { unique: true });
+
 export default mongoose.model<Like>("Likes", likeSchema);

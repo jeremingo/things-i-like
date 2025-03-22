@@ -36,11 +36,40 @@ class PostsController extends BaseController<Post> {
       return;
     }
 
+    try {
+      await this.likeRepository.create({ postId: req.params.id, userId: req.userId });
+    } catch (err) {
+      res.status(StatusCodes.BAD_REQUEST).send(new Error(err as string));
+      return;
+    }
+
     post.likeCount++;
 
     await post.save();
 
-    await this.likeRepository.create({ postId: req.params.id, userId: req.userId });
+
+    res.status(StatusCodes.OK).send();
+  }
+
+  async hasLiked(this: PostsController, req: Request<{ id: BSONObjectId }, object, object>, res: Response<boolean | Error>) {
+    const like: Like[] = await this.likeRepository.getAll({ postId: req.params.id, userId: req.userId });
+
+    res.status(StatusCodes.OK).send(like.length > 0);
+  }
+
+  async unlike(this: PostsController, req: Request<{ id: BSONObjectId }, object, object>, res: Response<void | Error>) {
+    const post = await postModel.findById(req.params.id);
+
+    if (!post) {
+      res.status(StatusCodes.NOT_FOUND).send(new NotFoundError());
+      return;
+    }
+
+    post.likeCount--;
+
+    await post.save();
+
+    await this.likeRepository.deleteAll({ postId: req.params.id, userId: req.userId });
 
     res.status(StatusCodes.OK).send();
   }

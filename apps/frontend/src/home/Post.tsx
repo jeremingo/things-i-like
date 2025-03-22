@@ -17,6 +17,7 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
   const navigate = useNavigate()
   const [isLoggedIn, setLoggedIn] = React.useState(authService.isLoggedIn());
   const [likeCount, setLikeCount] = React.useState(post.likeCount);
+  const [hasLiked, setHasLiked] = React.useState(false);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -44,6 +45,16 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
     });
   }
 
+  useEffect(() => {
+    if(isLoggedIn) {
+      postService.hasLiked(post._id!).then((hasLiked) => setHasLiked(hasLiked));
+    } else {
+      setHasLiked(false);
+    }
+  }
+  , [isLoggedIn, post._id]);
+
+
   function handleEdit(): void {
     navigate(`/edit-post/${post._id}`);
   }
@@ -55,11 +66,18 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
     }
 
     try {
-      await postService.like(post._id!);
-      setLikeCount(likeCount + 1);
+      if (hasLiked) {
+        await postService.unlike(post._id!);
+        setLikeCount((prev) => prev - 1);
+        setHasLiked(false);
+      } else {
+        await postService.like(post._id!);
+        setLikeCount((prev) => prev + 1);
+        setHasLiked(true);
+      }
     } catch (err) {
-      console.error('Failed to like the post:', err);
-      alert('Failed to like the post. Please try again.');
+      console.error('Failed to toggle like:', err);
+      alert('Failed to toggle like. Please try again.');
     }
   }
 
@@ -100,7 +118,7 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
             onClick={handleLike}
             style={{
               padding: '8px 16px',
-              backgroundColor: '#28a745',
+              backgroundColor: hasLiked ? '#28a745' : '#007bff',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
