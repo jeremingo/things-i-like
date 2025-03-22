@@ -5,7 +5,7 @@ import userService from '../services/user-service';
 import authService from '../services/auth-service';
 import postService from '../services/post-service';
 import { ObjectId } from 'bson';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface PostProps {
   post: APIPost;
@@ -128,7 +128,18 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
           >
             Like
           </button>
-          <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
+          <div>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</div>
+          <Link
+            to={`/post/${post._id}`}
+            style={{
+              textDecoration: 'none',
+              color: '#007bff',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+            }}
+          >
+            {post.commentCount} {post.commentCount === 1 ? 'Comment' : 'Comments'}
+          </Link>
         </div>
     </div></>
   );

@@ -6,6 +6,7 @@ const postSchema = new mongoose.Schema<Post>({
   title: { type: String, required: true },
   content: { type: String, required: false, },
   likeCount: { type: Number, default: 0 },
+  commentCount: { type: Number, default: 0 },
 });
 
 const postModel = mongoose.model<Post>("Posts", postSchema);
