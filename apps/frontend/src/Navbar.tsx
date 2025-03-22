@@ -75,7 +75,16 @@ const Navbar: React.FC = () => {
             fontWeight: 'bold',
           }}>
             New Post
-          </div><div onClick={handleLogout} style={{
+          </div>
+          <div onClick={() => navigate('/settings')} style={{
+            cursor: 'pointer',
+            color: 'white',
+            fontSize: '18px',
+            fontWeight: 'bold',
+          }}>
+            Settings
+          </div>
+          <div onClick={handleLogout} style={{
             cursor: 'pointer',
             color: 'white',
             fontSize: '18px',
