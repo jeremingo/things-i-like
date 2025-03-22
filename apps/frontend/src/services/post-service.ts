@@ -24,6 +24,11 @@ const PostService: PostAPI = {
     await apiClient.delete(`/posts/${req}`, {
       headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }
     });
+  },
+  like: async (req: ObjectId) => {
+    await apiClient.post(`/posts/${req}/like`, {}, {
+      headers: { 'Authorization': `Bearer ${authService.getTokens().accessToken}` }
+    });
   }
 };
 
