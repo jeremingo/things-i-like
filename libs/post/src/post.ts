@@ -5,5 +5,6 @@ export interface Post {
   title: string;
   content?: string;
   likeCount: number;
+  commentCount: number;
   _id?: ObjectId;
 }
