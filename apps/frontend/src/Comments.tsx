@@ -10,45 +10,40 @@ interface PostsProps {
 }
 
 const Posts: React.FC<Partial<PostsProps>> = ({ filter }) => {
-  const [posts, setPosts] = useState<APIPost[]>([]);
+  const [comments, setComments] = useState<APIPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchComments = async () => {
       try {
-        const fetchedPosts = await commentService.getAll(filter? filter : {});
-        setPosts(fetchedPosts);
+        const fetchedComments = await commentService.getAll(filter? filter : {});
+        setComments(fetchedComments);
       } catch (err) {
         console.error('Failed to fetch posts:', err);
-        setError('Failed to load posts. Please try again later.');
+        alert('Failed to load posts. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPosts();
+    fetchComments();
   }, [filter]);
 
   if (loading) {
-    return <p>Loading posts...</p>;
+    return <p>Loading comments...</p>;
   }
 
-  if (error) {
-    return <p style={{ color: 'red' }}>{error}</p>;
-  }
-
-  function handleDelete(postId: ObjectId): void {
-    setPosts(posts.filter((post) => post._id !== postId));
+  function handleDelete(commentId: ObjectId): void {
+    setComments(comments.filter((comment) => comment._id !== commentId));
   }
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h1>Comments</h1>
-      {posts.length === 0 ? (
+      {comments.length === 0 ? (
         <p>No comments available.</p>
       ) : (
-        posts.map((post) => <Comment key={post._id!.toString()} post={post} onDelete={handleDelete} />)
+        comments.map((comment) => <Comment key={comment._id!.toString()} comment={comment} onDelete={handleDelete} />)
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 import { User } from '@things-i-like/auth';
-import { Comment as APIPost } from '@things-i-like/comment';
+import { Comment as APIComment } from '@things-i-like/comment';
 import React, { useEffect } from 'react';
 import userService from './services/user-service';
 import authService from './services/auth-service';
@@ -7,12 +7,12 @@ import commentService from './services/comment-service';
 import { ObjectId } from 'bson';
 import { useNavigate } from 'react-router-dom';
 
-interface PostProps {
-  post: APIPost;
+interface CommentPorps {
+  comment: APIComment;
   onDelete: (postId: ObjectId) => void;
 }
 
-const Comment: React.FC<PostProps> = ({ post, onDelete }) => {
+const Comment: React.FC<CommentPorps> = ({ comment, onDelete }) => {
   const [user, setUser] = React.useState<User | null>(null);
   const navigate = useNavigate()
   const [isLoggedIn, setLoggedIn] = React.useState(authService.isLoggedIn());
@@ -33,22 +33,22 @@ const Comment: React.FC<PostProps> = ({ post, onDelete }) => {
   }, []);
 
   useEffect(() => {
-    userService.getById(post.userId).then((user) => setUser(user));
-  }, [post.userId]);
+    userService.getById(comment.postId).then((user) => setUser(user));
+  }, [comment.postId]);
   
   function handleDelete(): void {
-    commentService.deleteItem(post._id!).then(() => {
-      alert('Post deleted successfully!');
-      onDelete(post._id!);
+    commentService.deleteItem(comment._id!).then(() => {
+      alert('comment deleted successfully!');
+      onDelete(comment._id!);
     });
   }
 
   function handleEdit(): void {
-    navigate(`/edit-comment/${post._id}`);
+    navigate(`/edit-comment/${comment._id}`);
   }
 
   return (
-    <>{ isLoggedIn && authService.getUserId() === post.userId &&
+    <>{ isLoggedIn && authService.getUserId() === comment.userId &&
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}> 
         <button onClick={ handleEdit } style={{
           padding: '8px 16px',
@@ -76,8 +76,8 @@ const Comment: React.FC<PostProps> = ({ post, onDelete }) => {
       marginBottom: '16px',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     }}>
-      <p style={{ margin: '0 0 16px 0', color: '#555' }}>{post.content}</p>
-      <p style={{ margin: '0', fontStyle: 'italic', color: '#777' }}>Posted by: {user?.username}</p>
+      <p style={{ margin: '0 0 16px 0', color: '#555' }}>{comment.content}</p>
+      <p style={{ margin: '0', fontStyle: 'italic', color: '#777' }}>Comment by: {user?.username}</p>
     </div></>
   );
 };

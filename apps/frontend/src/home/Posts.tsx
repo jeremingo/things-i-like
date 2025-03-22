@@ -11,7 +11,6 @@ interface PostsProps {
 const Posts: React.FC<Partial<PostsProps>> = ({ filter }) => {
   const [posts, setPosts] = useState<APIPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -20,7 +19,7 @@ const Posts: React.FC<Partial<PostsProps>> = ({ filter }) => {
         setPosts(fetchedPosts);
       } catch (err) {
         console.error('Failed to fetch posts:', err);
-        setError('Failed to load posts. Please try again later.');
+        alert('Failed to load posts. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -31,10 +30,6 @@ const Posts: React.FC<Partial<PostsProps>> = ({ filter }) => {
 
   if (loading) {
     return <p>Loading posts...</p>;
-  }
-
-  if (error) {
-    return <p style={{ color: 'red' }}>{error}</p>;
   }
 
   function handleDelete(postId: ObjectId): void {
