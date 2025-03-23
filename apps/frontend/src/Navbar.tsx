@@ -50,28 +50,26 @@ const Navbar: React.FC = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-    }}>
+    }} class="navbar navbar-expand-lg navbar-light bg-light">
       <div style={{
         display: 'flex',
         gap: '20px',
         fontSize: '18px',
         color: 'white',
       }}>
-        <Link to="/" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>things-i-like</Link>
+        <Link to="/" style={{ textDecoration: 'none', fontWeight: 'bold' }}>things-i-like</Link>
       </div>
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
         { isLoggedIn && (
           <button onClick={() => navigate('/new-post')} style={{
             cursor: 'pointer',
-            color: 'white',
             fontSize: '14px',
             fontWeight: 'bold',
-          }}>
+          }} className="btn btn-primary">
             New Post
           </button>) }
         <FontAwesomeIcon onClick={handleProfileClick} style={{
           cursor: 'pointer',
-          color: 'white',
           fontSize: '18px',
           fontWeight: 'bold',
         }} icon={faUser}/>
@@ -79,13 +77,11 @@ const Navbar: React.FC = () => {
           <>
           <FontAwesomeIcon onClick={() => navigate('/settings')} style={{
             cursor: 'pointer',
-            color: 'white',
             fontSize: '18px',
             fontWeight: 'bold',
           }} icon={faGear} />
           <FontAwesomeIcon onClick={handleLogout} style={{
             cursor: 'pointer',
-            color: 'white',
             fontSize: '18px',
             fontWeight: 'bold',
           }} icon={faRightFromBracket} /></>
