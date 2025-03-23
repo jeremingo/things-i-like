@@ -20,6 +20,7 @@
     "@things-i-like/post": "^1.0.0",
     "@things-i-like/user": "^1.0.0",
     "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
