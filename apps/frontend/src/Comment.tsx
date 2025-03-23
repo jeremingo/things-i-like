@@ -8,6 +8,7 @@ import { ObjectId } from 'bson';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useAlert } from './AlertContext';
 
 interface CommentProps {
   comment: APIComment;
@@ -18,6 +19,7 @@ const Comment: React.FC<CommentProps> = ({ comment, onDelete }) => {
   const [user, setUser] = React.useState<User | null>(null);
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = React.useState(authService.isLoggedIn());
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -38,10 +40,15 @@ const Comment: React.FC<CommentProps> = ({ comment, onDelete }) => {
   }, [comment.userId]);
 
   function handleDelete(): void {
-    commentService.deleteItem(comment._id!).then(() => {
-      alert('Comment deleted successfully!');
-      onDelete(comment._id!);
-    });
+    commentService.deleteItem(comment._id!)
+      .then(() => {
+        showAlert('success', 'Comment deleted successfully!');
+        onDelete(comment._id!);
+      })
+      .catch((err) => {
+        console.error('Failed to delete comment:', err);
+        showAlert('danger', 'Failed to delete comment. Please try again.');
+      });
   }
 
   function handleEdit(): void {

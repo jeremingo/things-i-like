@@ -4,6 +4,7 @@ import authService from './services/auth-service';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useAlert } from './AlertContext';
 
 const schema = z.object({
   email: z.string()
@@ -21,6 +22,7 @@ const Login: React.FC = () => {
     mode: 'onChange',
   });
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     if (authService.isLoggedIn()) {
@@ -31,12 +33,12 @@ const Login: React.FC = () => {
   const onSubmit = (data: FormData) => {
     authService.login(data)
       .then(() => {
-        alert('Login successful');
+        showAlert('success', 'Login successful!');
         navigate('/');
       })
       .catch((error) => {
         console.error('Login failed:', error);
-        alert('Login failed. Please try again.');
+        showAlert('danger', 'Login failed. Please try again.');
       });
   };
 

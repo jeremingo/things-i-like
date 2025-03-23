@@ -6,6 +6,7 @@ import { User } from '@things-i-like/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useAlert } from './AlertContext';
 
 const schema = z.object({
   username: z.string().nonempty('Username is required'),
@@ -21,6 +22,7 @@ const EditUser: React.FC = () => {
   });
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
   const [imgSrc, setImgSrc] = useState<File>();
   const [imgUrl, setImgUrl] = useState<string>();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,7 +40,7 @@ const EditUser: React.FC = () => {
           })
           .catch((err) => {
             console.error('Failed to fetch user:', err);
-            alert('Failed to load user details. Please try again later.');
+            showAlert('danger', 'Failed to load user details. Please try again later.');
           })
           .finally(() => {
             setLoading(false);
@@ -49,18 +51,18 @@ const EditUser: React.FC = () => {
     };
 
     fetchUser();
-  }, [navigate, reset]);
+  }, [navigate, reset, showAlert]);
 
   const onSubmit = async (data: FormData) => {
     await userService
       .update(data, imgSrc)
       .then(() => {
-        alert('User updated successfully!');
+        showAlert('success', 'User updated successfully!');
         navigate(`/user/${user?._id}`);
       })
       .catch((err) => {
         console.error('Failed to update user:', err);
-        alert('Failed to update user. Please try again.');
+        showAlert('danger', 'Failed to update user. Please try again.');
       });
   };
 

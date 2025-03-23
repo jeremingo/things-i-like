@@ -4,10 +4,12 @@ import authService from './services/auth-service';
 import PostForm, { CommentFormData as PostFormData } from './CommentForm';
 import CommentService from './services/comment-service';
 import { ObjectId } from 'bson';
+import { useAlert } from './AlertContext';
 
 const NewComment: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     if (!authService.isLoggedIn()) {
@@ -18,12 +20,12 @@ const NewComment: React.FC = () => {
   const onSubmit = async (data: PostFormData) => {
     await CommentService.create({ ...data, postId: new ObjectId(postId) })
       .then(() => {
-        alert('Comment created successfully!');
+        showAlert('success', 'Comment created successfully!');
         navigate('/post/' + postId);
       })
       .catch((err) => {
         console.error('Failed to create comment:', err);
-        alert('Failed to create comment. Please try again.');
+        showAlert('danger', 'Failed to create comment. Please try again.');
       });
   };
 

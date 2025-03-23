@@ -8,6 +8,7 @@ import { ObjectId } from 'bson';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useAlert } from '../AlertContext';
 
 interface PostProps {
   post: APIPost;
@@ -20,6 +21,7 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
   const [isLoggedIn, setLoggedIn] = React.useState(authService.isLoggedIn());
   const [likeCount, setLikeCount] = React.useState(post.likeCount);
   const [hasLiked, setHasLiked] = React.useState(false);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -40,10 +42,15 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
   }, [post.userId]);
 
   function handleDelete(): void {
-    postService.deleteItem(post._id!).then(() => {
-      alert('Post deleted successfully!');
-      onDelete(post._id!);
-    });
+    postService.deleteItem(post._id!)
+      .then(() => {
+        showAlert('success', 'Post deleted successfully!');
+        onDelete(post._id!);
+      })
+      .catch((err) => {
+        console.error('Failed to delete post:', err);
+        showAlert('danger', 'Failed to delete post. Please try again.');
+      });
   }
 
   useEffect(() => {
@@ -76,7 +83,7 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
       }
     } catch (err) {
       console.error('Failed to toggle like:', err);
-      alert('Failed to toggle like. Please try again.');
+      showAlert('danger', 'Failed to toggle like. Please try again.');
     }
   }
 

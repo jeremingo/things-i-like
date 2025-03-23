@@ -4,6 +4,7 @@ import authService from './services/auth-service';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAlert } from './AlertContext';
 
 const schema = z.object({
   email: z.string()
@@ -25,6 +26,7 @@ const Register: React.FC = () => {
   });
 
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     if (authService.isLoggedIn()) {
@@ -35,12 +37,12 @@ const Register: React.FC = () => {
   const onSubmit = async (data: FormData) => {
     await authService.register(data)
       .then(() => {
-        alert('Registration successful');
-        navigate('/login');
+        showAlert('success', 'Registration successful! Redirecting to login...');
+        setTimeout(() => navigate('/login'), 3000);
       })
       .catch((err) => {
         console.error('Registration failed:', err);
-        alert('Registration failed. Please try again.');
+        showAlert('danger', 'Registration failed. Please try again.');
       });
   };
 
