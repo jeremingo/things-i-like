@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-    }} class="navbar navbar-expand-lg navbar-light bg-light">
+    }} className="navbar navbar-expand-lg navbar-light bg-light">
       <div style={{
         display: 'flex',
         gap: '20px',
