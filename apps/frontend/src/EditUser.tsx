@@ -2,7 +2,6 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import userService from './services/user-service';
 import authService from './services/auth-service';
-import avatar from './assets/avatar.jpeg';
 import { User } from '@things-i-like/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -80,7 +79,7 @@ const EditUser: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <label htmlFor="file" style={{ fontWeight: 'bold' }}>Photo</label>
         <div className="d-flex justify-content-center position-relative">
-          <img src={imgSrc ? URL.createObjectURL(imgSrc) : imgUrl || avatar} style={{ height: "230px", width: "230px" }} className="img-fluid" />
+          { (imgSrc || imgUrl) && <img src={imgSrc ? URL.createObjectURL(imgSrc) : imgUrl } style={{ height: "230px", width: "230px" }} className="img-fluid" />}
           <button type="button" className="btn position-absolute bottom-0 end-0" onClick={selectImg}>
             Select
           </button>
