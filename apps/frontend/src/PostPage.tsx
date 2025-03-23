@@ -63,6 +63,7 @@ const PostPage: React.FC = () => {
 
   return (
     <><div style={{ padding: '20px' }}>
+      { !!post.photo && <img src={post.photo} alt="Post Image" style={{ height: "230px", width: "230px" }}/> }
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>{post.title}</h1>
       </div>

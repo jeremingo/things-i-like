@@ -110,6 +110,7 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
       marginBottom: '16px',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     }}>
+      { !!post.photo && <img src={post.photo} alt="Post Image" style={{ height: "230px", width: "230px" }}/> }
       <h2 style={{ margin: '0 0 8px 0', color: '#333' }}>{post.title}</h2>
       <p style={{ margin: '0 0 16px 0', color: '#555' }}>{post.content}</p>
       <p style={{ margin: '0', fontStyle: 'italic', color: '#777' }}>Posted by: {user?.username}</p>
