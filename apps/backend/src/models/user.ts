@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema<User>({
   email: { type: String, required: true, unique: true, },
   username: { type: String, required: true, unique: true, },
   displayName: { type: String, required: false, },
+  photo: { type: String, required: false, },
   password: { type: String, required: true, },
   refreshToken: { type: [String], default: [] }
 });
