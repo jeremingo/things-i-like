@@ -9,14 +9,19 @@ initApp()
 .then((app) => {
   if (process.env.NODE_ENV !== 'production') {
     console.log('development');
-    http.createServer(app).listen(Config.PORT);
+    http.createServer(app).listen(Config.PORT, () => {
+      console.log(`Server running on http://localhost:${Config.PORT}`);
+    }
+    );
   } else {
     console.log('PRODUCTION');
     const options2 = {
       key: fs.readFileSync(path.join(__dirname, '../client-key.pem')),
       cert: fs.readFileSync(path.join(__dirname, '../client-cert.pem'))
     };
-    https.createServer(options2, app).listen(Config.HTTPS_PORT);
+    https.createServer(options2, app).listen(Config.HTTPS_PORT, () => {
+      console.log(`Server running on https://localhost:${Config.HTTPS_PORT}`);
+    });
   }
 })
 .catch(console.error);
