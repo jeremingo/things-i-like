@@ -82,7 +82,7 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, initialData, action }) =>
                         src={imgSrc ? URL.createObjectURL(imgSrc) : initialData?.photo}
                         alt="Selected"
                         className="img-fluid rounded"
-                        style={{ height: "230px", width: "230px", objectFit: "cover" }}
+                        style={{ maxWidth: "100%", height: "auto", objectFit: "contain" }}
                       />
                     )}
                     <button
