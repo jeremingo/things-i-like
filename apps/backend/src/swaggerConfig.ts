@@ -11,9 +11,8 @@ const options: Options = {
       description: 'API documentation for Things I Like application',
     },
     servers: [
-      {
-        url: 'http://localhost:3000',
-      },
+      { url: 'http://localhost:3000', },
+      { url: 'http://10.10.241.31', },
     ],
   },
   apis: ['./src/routes/*.ts'],

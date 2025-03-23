@@ -5,6 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "dev": "nodemon src/app.ts",
+    "prod": "tsc -p tsconfig_prod.json && node dist/app.js",
     "build": "tsc",
     "start": "tsc && node dist/app.js",
     "test": "tsc && jest --detectOpenHandles --forceExit --coverage",
