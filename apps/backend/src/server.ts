@@ -11,6 +11,7 @@ import authRoute from './routes/auth';
 import postsRoute from './routes/post';
 import usersRoute from './routes/user';
 import commentRoute from './routes/comment';
+import fileRoute from './routes/file';
 import Config from './env/config';
 
 app.use(bodyParser.json());
@@ -27,6 +28,11 @@ app.use('/auth', authRoute);
 app.use('/posts', postsRoute)
 app.use('/users', usersRoute)
 app.use('/comments', commentRoute)
+app.use('/file', fileRoute)
+
+app.use("/public", express.static("public"));
+app.use("/storage", express.static("storage"));
+app.use("/front", express.static("front"));
 
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));

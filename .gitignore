@@ -1,3 +1,9 @@
+# Server Files
+storage/
+!storage/.gitkeep
+front/
+!front/.gitkeep
+
 # Logs
 logs
 *.log

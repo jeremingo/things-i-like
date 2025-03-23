@@ -18,6 +18,7 @@ jobs:
       JWT_SECRET: 'test_secret'
       TOKEN_EXPIRES: '1d'
       REFRESH_TOKEN_EXPIRES: '7d'
+      DOMAIN_BASE: 'http://localhost:3000'
 
     steps:
       - name: Checkout code
