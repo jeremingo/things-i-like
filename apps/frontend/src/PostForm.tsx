@@ -65,7 +65,7 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, initialData, action }) =>
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', margin: '0 auto' }}>
       <form onSubmit={handleSubmit(onSubmitExtended)} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <label htmlFor="file" style={{ fontWeight: 'bold' }}>Photo</label>
         <div className="d-flex justify-content-center position-relative">

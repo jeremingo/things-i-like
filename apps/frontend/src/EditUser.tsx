@@ -75,7 +75,7 @@ const EditUser: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', margin: '0 auto' }}>
       <h1>Edit User</h1>
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <label htmlFor="file" style={{ fontWeight: 'bold' }}>Photo</label>

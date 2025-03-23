@@ -37,8 +37,7 @@ const Posts: React.FC<Partial<PostsProps>> = ({ filter }) => {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1>Posts</h1>
+    <div style={{ padding: '20px', margin: '0 auto' }}>
       {posts.length === 0 ? (
         <p>No posts available.</p>
       ) : (

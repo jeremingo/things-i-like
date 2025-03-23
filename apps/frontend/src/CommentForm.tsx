@@ -35,7 +35,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ onSubmit, initialData, action
   }, [navigate]);
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', margin: '0 auto' }}>
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <label htmlFor="content" style={{ fontWeight: 'bold' }}>Content</label>
         <textarea {...register('content')} id="content" rows={5} />

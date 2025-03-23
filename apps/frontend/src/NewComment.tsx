@@ -26,7 +26,7 @@ const NewComment: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', margin: '0 auto' }}>
       <h1>Create a New Comment</h1>
       <PostForm onSubmit={onSubmit} action="Create Comment" />
     </div>
