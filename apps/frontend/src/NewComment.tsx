@@ -18,7 +18,7 @@ const NewComment: React.FC = () => {
   const onSubmit = async (data: PostFormData) => {
     await CommentService.create({...data, postId: new ObjectId(postId)}).then(() => {
       alert('Comment created successfully!');
-      navigate('/');
+      navigate('/post/' + postId);
     }).catch((err) => {
       console.error('Failed to create comment:', err);
       alert('Failed to create comment. Please try again.');
