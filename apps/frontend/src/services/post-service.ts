@@ -8,7 +8,7 @@ const PostService: PostAPI = {
     return (await apiClient.get(`/posts/${req}`)).data;
   },
   getAll: async (req: Partial<Post>): Promise<Post[]> => {
-    return (await apiClient.get("/posts", { params: req })).data;
+    return (await apiClient.get("/posts", { params: req })).data.reverse();
   },
   create: async (req: Omit<Post, 'userId'>) => {
     return (await apiClient.post("/posts", req, {
