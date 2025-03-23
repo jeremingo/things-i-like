@@ -6,6 +6,8 @@ import authService from '../services/auth-service';
 import postService from '../services/post-service';
 import { ObjectId } from 'bson';
 import { Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 interface PostProps {
   post: APIPost;
@@ -98,12 +100,18 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
               <h5 className="card-title">{post.title}</h5>
               {isLoggedIn && authService.getUserId() === post.userId && (
                 <div>
-                  <button onClick={handleEdit} className="btn btn-primary me-2">
-                    Edit
-                  </button>
-                  <button onClick={handleDelete} className="btn btn-danger">
-                    Delete
-                  </button>
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    className="text-primary me-3"
+                    style={{ cursor: 'pointer' }}
+                    onClick={handleEdit}
+                  />
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className="text-danger"
+                    style={{ cursor: 'pointer' }}
+                    onClick={handleDelete}
+                  />
                 </div>
               )}
             </div>
