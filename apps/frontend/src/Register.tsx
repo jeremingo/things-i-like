@@ -14,25 +14,15 @@ const schema = z.object({
   password: z.string()
     .min(8, 'Password must be at least 8 characters long')
     .nonempty('Password is required'),
-})
+});
 
 type FormData = z.infer<typeof schema>;
 
 const Register: React.FC = () => {
   const { register, handleSubmit, formState } = useForm<FormData>({
     resolver: zodResolver(schema),
-    mode: 'onChange'
+    mode: 'onChange',
   });
-
-  const onSubmit = async (data: FormData) => {
-    await authService.register(data).then(() => {
-      console.log('Registration successful');
-      navigate('/login');
-    }).catch((err) => {
-      console.error('Registration failed:', err);
-      alert('Registration failed. Please try again.');
-    });
-  }
 
   const navigate = useNavigate();
 
@@ -42,42 +32,99 @@ const Register: React.FC = () => {
     }
   }, [navigate]);
 
+  const onSubmit = async (data: FormData) => {
+    await authService.register(data)
+      .then(() => {
+        alert('Registration successful');
+        navigate('/login');
+      })
+      .catch((err) => {
+        console.error('Registration failed:', err);
+        alert('Registration failed. Please try again.');
+      });
+  };
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
-        <h2>Register</h2>
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-lg-4 col-md-6">
+          <div className="card shadow-sm">
+            <div className="card-header bg-primary text-white">
+              <h4 className="mb-0 text-center">Register</h4>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                {/* Email Field */}
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label fw-bold">
+                    Email
+                  </label>
+                  <input
+                    {...register('email')}
+                    type="email"
+                    id="email"
+                    className={`form-control ${formState.errors.email ? 'is-invalid' : ''}`}
+                  />
+                  {formState.errors.email && (
+                    <div className="invalid-feedback">{formState.errors.email?.message}</div>
+                  )}
+                </div>
 
-        <label htmlFor="email">Email</label>
-        <input {...register('email')} type="email" id="email" />
-        {formState.errors.email && <p>{formState.errors.email?.message}</p>}
+                {/* Username Field */}
+                <div className="mb-3">
+                  <label htmlFor="username" className="form-label fw-bold">
+                    Username
+                  </label>
+                  <input
+                    {...register('username')}
+                    type="text"
+                    id="username"
+                    className={`form-control ${formState.errors.username ? 'is-invalid' : ''}`}
+                  />
+                  {formState.errors.username && (
+                    <div className="invalid-feedback">{formState.errors.username?.message}</div>
+                  )}
+                </div>
 
-        <label htmlFor="username">Username</label>
-        <input {...register('username')} type="text" id="username" />
-        {formState.errors.username && <p>{formState.errors.username?.message}</p>}
+                {/* Password Field */}
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label fw-bold">
+                    Password
+                  </label>
+                  <input
+                    {...register('password')}
+                    type="password"
+                    id="password"
+                    className={`form-control ${formState.errors.password ? 'is-invalid' : ''}`}
+                  />
+                  {formState.errors.password && (
+                    <div className="invalid-feedback">{formState.errors.password?.message}</div>
+                  )}
+                </div>
 
-        <label htmlFor="password">Password</label>
-        <input {...register('password')} type="password" id="password" />
-        {formState.errors.password && <p>{formState.errors.password?.message}</p>}
+                {/* Submit Button */}
+                <div className="d-grid">
+                  <button type="submit" className="btn btn-primary">
+                    Register
+                  </button>
+                </div>
 
-        <button type="submit" style={{ marginTop: '20px' }}>Register</button>
-        <p style={{ marginTop: '20px', textAlign: 'center' }}>
-          Already have an account?{' '}
-          <button
-            type="button"
-            onClick={() => navigate('/login')}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'blue',
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          >
-            Login here
-          </button>
-        </p>
-      </form>
+                {/* Login Link */}
+                <p className="mt-3 text-center">
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/login')}
+                    className="btn btn-link p-0"
+                  >
+                    Login here
+                  </button>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
