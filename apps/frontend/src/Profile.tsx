@@ -28,24 +28,40 @@ const Profile: React.FC = () => {
   }, [userId]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p className="text-center mt-5">Loading...</p>;
   }
 
   if (!user) {
-    return <p>User not found.</p>;
+    return <p className="text-center mt-5">User not found.</p>;
   }
 
   return (
-    <><div style={{ padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>{user.username}'s Profile</h1>
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-12">
+          <div className="card shadow-sm mb-4">
+            <div className="card-body d-flex align-items-center">
+              {user.photo && (
+                <img
+                  src={user.photo}
+                  alt={`${user.username}'s Profile`}
+                  className="img-fluid rounded-circle me-4"
+                  style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                />
+              )}
+              <div>
+                <h1 className="card-title">{user.username}'s Profile</h1>
+                <p className="card-text text-muted">
+                  Welcome to {user.username}'s profile page!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <Posts filter={{ userId: user._id }} />
+        </div>
       </div>
-      <p>Welcome to {user.username}'s profile page!</p>
-      <p>Email: {user.email}</p>
     </div>
-    <div>
-      <Posts filter={{ userId: user._id }} />
-    </div></>
   );
 };
 

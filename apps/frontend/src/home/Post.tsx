@@ -6,6 +6,9 @@ import authService from '../services/auth-service';
 import postService from '../services/post-service';
 import { ObjectId } from 'bson';
 import { Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useAlert } from '../AlertContext';
 
 interface PostProps {
   post: APIPost;
@@ -14,14 +17,14 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ post, onDelete }) => {
   const [user, setUser] = React.useState<User | null>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = React.useState(authService.isLoggedIn());
   const [likeCount, setLikeCount] = React.useState(post.likeCount);
   const [hasLiked, setHasLiked] = React.useState(false);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     const handleStorageChange = () => {
-      console.log('Storage changed');
       setLoggedIn(authService.isLoggedIn());
     };
 
@@ -31,29 +34,32 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('authChange', handleStorageChange);
-    }
+    };
   }, []);
 
   useEffect(() => {
     userService.getById(post.userId).then((user) => setUser(user));
   }, [post.userId]);
-  
+
   function handleDelete(): void {
-    postService.deleteItem(post._id!).then(() => {
-      alert('Post deleted successfully!');
-      onDelete(post._id!);
-    });
+    postService.deleteItem(post._id!)
+      .then(() => {
+        showAlert('success', 'Post deleted successfully!');
+        onDelete(post._id!);
+      })
+      .catch((err) => {
+        console.error('Failed to delete post:', err);
+        showAlert('danger', 'Failed to delete post. Please try again.');
+      });
   }
 
   useEffect(() => {
-    if(isLoggedIn) {
+    if (isLoggedIn) {
       postService.hasLiked(post._id!).then((hasLiked) => setHasLiked(hasLiked));
     } else {
       setHasLiked(false);
     }
-  }
-  , [isLoggedIn, post._id]);
-
+  }, [isLoggedIn, post._id]);
 
   function handleEdit(): void {
     navigate(`/edit-post/${post._id}`);
@@ -77,72 +83,69 @@ const Post: React.FC<PostProps> = ({ post, onDelete }) => {
       }
     } catch (err) {
       console.error('Failed to toggle like:', err);
-      alert('Failed to toggle like. Please try again.');
+      showAlert('danger', 'Failed to toggle like. Please try again.');
     }
   }
 
   return (
-    <>{ isLoggedIn && authService.getUserId() === post.userId &&
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}> 
-        <button onClick={ handleEdit } style={{
-          padding: '8px 16px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-        }}>Edit</button>
-        <button onClick={ handleDelete } style={{
-          padding: '8px 16px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-        }}>Delete</button>
-      </div>
-    }
-    <div style={{
+    <div className="card mb-3">
+      <div className="row g-0">
+        {post.photo && (
+          <div className="col-md-4">
+            <img
+              src={post.photo}
+              alt="Post Image"
+              className="img-fluid rounded-start"
+              style={{ height: '100%', objectFit: 'cover' }}
+            />
+          </div>
+        )}
 
-      border: '1px solid #ddd',
-      borderRadius: '8px',
-      padding: '16px',
-      marginBottom: '16px',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    }}>
-      { !!post.photo && <img src={post.photo} alt="Post Image" style={{ height: "230px", width: "230px" }}/> }
-      <h2 style={{ margin: '0 0 8px 0', color: '#333' }}>{post.title}</h2>
-      <p style={{ margin: '0 0 16px 0', color: '#555' }}>{post.content}</p>
-      <p style={{ margin: '0', fontStyle: 'italic', color: '#777' }}>Posted by: {user?.username}</p>
-      <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+        <div className={`col-md-${post.photo ? '8' : '12'}`}>
+          <div className="card-body">
+            <div className="d-flex justify-content-between align-items-center">
+              <h5 className="card-title">{post.title}</h5>
+              {isLoggedIn && authService.getUserId() === post.userId && (
+                <div>
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    className="text-primary me-3"
+                    style={{ cursor: 'pointer' }}
+                    onClick={handleEdit}
+                  />
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className="text-danger"
+                    style={{ cursor: 'pointer' }}
+                    onClick={handleDelete}
+                  />
+                </div>
+              )}
+            </div>
+
+            <p className="card-text">{post.content}</p>
+            <p className="card-text">
+              <small className="text-muted">Posted by: {user?.username}</small>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="card-footer d-flex justify-content-between align-items-center">
+        <div>
           <button
             onClick={handleLike}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: hasLiked ? '#28a745' : '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              marginRight: '10px',
-            }}
+            className={`btn ${hasLiked ? 'btn-success' : 'btn-primary'} me-2`}
           >
             Like
           </button>
-          <div>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</div>
-          <Link
-            to={`/post/${post._id}`}
-            style={{
-              textDecoration: 'none',
-              color: '#007bff',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-            }}
-          >
-            {post.commentCount} {post.commentCount === 1 ? 'Comment' : 'Comments'}
-          </Link>
+          <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
         </div>
-    </div></>
+        <Link to={`/post/${post._id}`} className="btn btn-link">
+          {post.commentCount} {post.commentCount === 1 ? 'Comment' : 'Comments'}
+        </Link>
+      </div>
+    </div>
   );
 };
 

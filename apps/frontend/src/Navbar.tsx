@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from './services/auth-service';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGear, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -47,51 +49,42 @@ const Navbar: React.FC = () => {
       zIndex: 1000,
       display: 'flex',
       justifyContent: 'space-between',
-    }}>
+      alignItems: 'center',
+    }} className="navbar navbar-expand-lg navbar-light bg-light">
       <div style={{
         display: 'flex',
         gap: '20px',
         fontSize: '18px',
         color: 'white',
       }}>
-        <Link to="/" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>Home</Link>
-        <Link to="/login" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>Login</Link>
-        <Link to="/register" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>Register</Link>
+        <Link to="/" style={{ textDecoration: 'none', fontWeight: 'bold' }}>things-i-like</Link>
       </div>
-      <div style={{ display: 'flex', gap: '20px' }}>
-        <div onClick={handleProfileClick} style={{
+      <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+        { isLoggedIn && (
+          <button onClick={() => navigate('/new-post')} style={{
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          }} className="btn btn-primary">
+            New Post
+          </button>) }
+        <FontAwesomeIcon onClick={handleProfileClick} style={{
           cursor: 'pointer',
-          color: 'white',
           fontSize: '18px',
           fontWeight: 'bold',
-        }}>
-          Profile 
-        </div>
+        }} icon={faUser}/>
         { isLoggedIn && (
-          <><div onClick={() => navigate('/new-post')} style={{
+          <>
+          <FontAwesomeIcon onClick={() => navigate('/settings')} style={{
             cursor: 'pointer',
-            color: 'white',
             fontSize: '18px',
             fontWeight: 'bold',
-          }}>
-            New Post
-          </div>
-          <div onClick={() => navigate('/settings')} style={{
+          }} icon={faGear} />
+          <FontAwesomeIcon onClick={handleLogout} style={{
             cursor: 'pointer',
-            color: 'white',
             fontSize: '18px',
             fontWeight: 'bold',
-          }}>
-            Settings
-          </div>
-          <div onClick={handleLogout} style={{
-            cursor: 'pointer',
-            color: 'white',
-            fontSize: '18px',
-            fontWeight: 'bold',
-          }}>
-              Log out
-            </div></>
+          }} icon={faRightFromBracket} /></>
         )}
       </div>
     </nav>

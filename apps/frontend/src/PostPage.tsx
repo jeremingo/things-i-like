@@ -42,37 +42,68 @@ const PostPage: React.FC = () => {
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('authChange', handleStorageChange);
-    }
+    };
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p className="text-center mt-5">Loading...</p>;
   }
 
   if (!post) {
-    return <p>Post not found.</p>;
+    return <p className="text-center mt-5">Post not found.</p>;
   }
 
   function handleComment(): void {
     if (!isLoggedIn) {
-      navigate('/login')
+      navigate('/login');
     } else {
       navigate(`/add-comment/${post?._id}`);
     }
   }
 
   return (
-    <><div style={{ padding: '20px' }}>
-      { !!post.photo && <img src={post.photo} alt="Post Image" style={{ height: "230px", width: "230px" }}/> }
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>{post.title}</h1>
+    <div className="container-fluid mt-5">
+      <div className="row justify-content-center">
+        <div className="col-12">
+          <div className="card shadow-sm mb-4">
+            <div className="row g-0">
+              {post.photo && (
+                <div className="col-md-4">
+                  <img
+                    src={post.photo}
+                    alt="Post Image"
+                    className="img-fluid rounded-start"
+                    style={{ objectFit: 'cover', height: '100%' }}
+                  />
+                </div>
+              )}
+
+              <div className={`col-md-${post.photo ? '8' : '12'}`}>
+                <div className="card-body">
+                  <h1 className="card-title">{post.title}</h1>
+                  <p className="card-text">{post.content}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="d-flex justify-content-end mb-4">
+            <button className="btn btn-primary" onClick={handleComment}>
+              Add Comment
+            </button>
+          </div>
+
+          <div className="card shadow-sm">
+            <div className="card-header bg-primary text-white">
+              <h5 className="mb-0">Comments</h5>
+            </div>
+            <div className="card-body">
+              <Comments filter={{ postId: post._id }} />
+            </div>
+          </div>
+        </div>
       </div>
-      <p>{post.content}</p>
     </div>
-    <button onClick={handleComment}>Add Comment</button>
-    <div>
-      <Comments filter={{ postId: post._id }} />
-    </div></>
   );
 };
 
