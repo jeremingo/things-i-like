@@ -26,12 +26,12 @@
   },
   "homepage": "https://github.com/jeremingo/things-i-like#readme",
   "dependencies": {
-    "bson": "^6.10.2"
+    "bson": "^6.10.2",
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "eslint": "^9.17.0",
-    "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.2"
   }
 }

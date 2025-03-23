@@ -12,6 +12,13 @@
     "lint": "npx eslint"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^4.17.21",
+    "@types/lodash": "^4.17.16",
+    "@types/multer": "^1.4.12",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "@things-i-like/auth": "^1.0.0",
     "@things-i-like/comment": "^1.0.0",
     "@things-i-like/post": "^1.0.0",
@@ -28,15 +35,8 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
-    "@types/express": "^4.17.21",
     "@types/jest": "^29.5.14",
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/lodash": "^4.17.16",
-    "@types/multer": "^1.4.12",
     "@types/supertest": "^6.0.2",
-    "@types/swagger-jsdoc": "^6.0.4",
-    "@types/swagger-ui-express": "^4.1.8",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^10.1.2",
     "nodemon": "^3.1.7",
