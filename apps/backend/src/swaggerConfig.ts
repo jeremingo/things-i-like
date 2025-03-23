@@ -12,7 +12,7 @@ const options: Options = {
     },
     servers: [
       { url: 'http://localhost:3000', },
-      { url: 'http://10.10.241.31', },
+      { url: 'http://node31.cs.colman.ac.il', },
     ],
   },
   apis: ['./src/routes/*.ts'],
