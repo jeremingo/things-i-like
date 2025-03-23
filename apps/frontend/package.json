@@ -11,6 +11,9 @@
     "start": "serve -s dist -p 3000"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@hookform/resolvers": "^4.1.3",
     "@things-i-like/auth": "^1.0.0",
     "@things-i-like/comment": "^1.0.0",
