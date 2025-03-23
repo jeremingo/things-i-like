@@ -3,6 +3,7 @@ import Config from './env/config';
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
+import path from 'path';
 
 initApp()
 .then((app) => {
@@ -12,8 +13,8 @@ initApp()
   } else {
     console.log('PRODUCTION');
     const options2 = {
-      key: fs.readFileSync('../client-key.pem'),
-      cert: fs.readFileSync('../client-cert.pem')
+      key: fs.readFileSync(path.join(__dirname, '../client-key.pem')),
+      cert: fs.readFileSync(path.join(__dirname, '../client-cert.pem'))
     };
     https.createServer(options2, app).listen(Config.HTTPS_PORT);
   }
