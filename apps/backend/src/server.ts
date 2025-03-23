@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-
+import swaggerUI from "swagger-ui-express";
+import swaggerConfig from "./swaggerConfig";
 import express, { Express } from 'express';
 const app = express();
 
@@ -22,6 +23,9 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Methods", "*");
   next();
 });
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerConfig));
 
 app.use('/', indexRoute);
 app.use('/auth', authRoute);
