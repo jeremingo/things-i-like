@@ -26,6 +26,7 @@ describe("File Tests", () => {
         try {
             const response = await request(app)
                 .post("/file?file=test_file.txt").attach('file', filePath)
+            console.log(response);
             expect(response.statusCode).toEqual(200);
             let url = (response.body as { url: string }).url;
             url = url.replace(/^.*\/\/[^/]+/, '')
