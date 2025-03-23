@@ -16,19 +16,31 @@ const NewComment: React.FC = () => {
   }, [navigate]);
 
   const onSubmit = async (data: PostFormData) => {
-    await CommentService.create({...data, postId: new ObjectId(postId)}).then(() => {
-      alert('Comment created successfully!');
-      navigate('/post/' + postId);
-    }).catch((err) => {
-      console.error('Failed to create comment:', err);
-      alert('Failed to create comment. Please try again.');
-    });
+    await CommentService.create({ ...data, postId: new ObjectId(postId) })
+      .then(() => {
+        alert('Comment created successfully!');
+        navigate('/post/' + postId);
+      })
+      .catch((err) => {
+        console.error('Failed to create comment:', err);
+        alert('Failed to create comment. Please try again.');
+      });
   };
 
   return (
-    <div style={{ padding: '20px', margin: '0 auto' }}>
-      <h1>Create a New Comment</h1>
-      <PostForm onSubmit={onSubmit} action="Create Comment" />
+    <div className="container-fluid mt-5">
+      <div className="row justify-content-center">
+        <div className="col-12">
+          <div className="card shadow-sm">
+            <div className="card-header bg-primary text-white">
+              <h4 className="mb-0">Create a New Comment</h4>
+            </div>
+            <div className="card-body">
+              <PostForm onSubmit={onSubmit} action="Create Comment" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
