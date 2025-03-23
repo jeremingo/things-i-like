@@ -44,10 +44,7 @@ const EditPost: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '20px', margin: '0 auto' }}>
-      <h1>Edit Post</h1>
       <PostForm onSubmit={onSubmit} initialData={post} action="Update Post" />
-    </div>
   );
 };
 

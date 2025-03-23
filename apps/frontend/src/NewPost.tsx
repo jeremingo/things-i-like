@@ -24,10 +24,7 @@ const NewPost: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px', margin: '0 auto' }}>
-      <h1>Create a New Post</h1>
-      <PostForm onSubmit={onSubmit} action="Create Post" />
-    </div>
+    <PostForm onSubmit={onSubmit} action="Create Post" />
   );
 };
 
