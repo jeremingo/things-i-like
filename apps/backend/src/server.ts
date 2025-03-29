@@ -13,6 +13,7 @@ import postsRoute from './routes/post';
 import usersRoute from './routes/user';
 import commentRoute from './routes/comment';
 import fileRoute from './routes/file';
+import aquariumRoute from './routes/aquariumRoutes';
 import Config from './env/config';
 
 app.use(bodyParser.json());
@@ -33,6 +34,7 @@ app.use('/posts', postsRoute)
 app.use('/users', usersRoute)
 app.use('/comments', commentRoute)
 app.use('/file', fileRoute)
+app.use('/aquarium', aquariumRoute)
 
 app.use("/public", express.static("public"));
 app.use("/storage", express.static("storage"));
